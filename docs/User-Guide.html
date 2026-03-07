@@ -1,0 +1,2500 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PreMap v1.0 用户手册</title>
+  <style>
+  :root{
+    --primary-color:#007bff;
+    --text-color:#343a40;
+    --header-color:#2c3e50;
+    --border-color:#dee2e6;
+    --background-light:#f8f9fa;
+    --sidebar-width:280px;
+    --header-height:60px;
+  }
+
+  html{ scroll-behavior:smooth; }
+
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue","Arial","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    line-height:1.7;color:var(--text-color);margin:0;background:#fff;
+  }
+
+  /* Layout */
+  #page-header{
+    position:fixed;top:0;left:0;width:100%;height:var(--header-height);
+    background:#fff;border-bottom:1px solid var(--border-color);
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 20px 0 calc(var(--sidebar-width) + 20px);box-sizing:border-box;z-index:1000;
+  }
+  #page-header h1{font-size:1.5em;margin:0;color:var(--header-color);border:none;}
+
+  #sidebar{
+    width:var(--sidebar-width);position:fixed;top:var(--header-height);left:0;
+    height:calc(100vh - var(--header-height));background:var(--background-light);
+    padding:20px;overflow-y:auto;border-right:1px solid var(--border-color);box-sizing:border-box;
+  }
+
+  #main-content{
+    margin-left:var(--sidebar-width);padding:20px 40px;padding-top:var(--header-height);
+    width:calc(100% - var(--sidebar-width));box-sizing:border-box;
+  }
+
+  section{
+    margin-bottom:40px;
+    padding-top:calc(var(--header-height) + 20px);
+    margin-top:calc(-1 * var(--header-height));
+    border-bottom:1px solid #eee;
+    padding-bottom:20px;
+  }
+
+  /* Shared anchor target for bilingual headings */
+  .anchor-target{
+    display:block;height:0;margin:0;padding:0;
+    scroll-margin-top:calc(var(--header-height) + 20px);
+  }
+  /* Also make native heading anchors respect the fixed header */
+  h2[id],h3[id],h4[id]{scroll-margin-top:calc(var(--header-height) + 20px);}
+
+  /* Language switcher */
+  .lang-switcher button{
+    background:var(--primary-color);color:#fff;border:none;padding:10px 18px;font-size:.9em;
+    font-weight:700;border-radius:5px;cursor:pointer;transition:background-color .2s, box-shadow .2s;
+  }
+  .lang-switcher button:hover{background:#0056b3;box-shadow:0 4px 12px rgba(0,123,255,.2);}
+  .lang-en,.lang-zh{display:none;}
+  .active-lang{display:revert;}
+
+  /* Sidebar */
+  #sidebar h3{margin-top:0;color:var(--header-color);}
+  #sidebar ul{list-style:none;padding:0;}
+  #sidebar ul li a{
+    text-decoration:none;color:#495057;display:block;padding:8px 10px;border-radius:4px;
+    transition:background-color .2s,color .2s;
+  }
+  #sidebar ul li a:hover{background:#e9ecef;}
+  #sidebar ul li a.active{background:var(--primary-color);color:#fff;font-weight:700;}
+
+  /* Content */
+  h1,h2,h3,h4{color:var(--header-color);border-bottom:1px solid #eaecef;padding-bottom:.3em;}
+  h1{font-size:2.2em} h2{font-size:1.9em} h3{font-size:1.4em}
+
+  code{
+    background:#e9ecef;padding:3px 6px;border-radius:4px;
+    font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,Courier,monospace;font-size:.9em;color:#e83e8c;
+  }
+  pre{
+    background:#2d2d2d;color:#f8f8f2;padding:15px;border-radius:5px;overflow-x:auto;
+    box-shadow:0 4px 8px rgba(0,0,0,.1);
+  }
+  pre code{background:none;padding:0;color:inherit;}
+
+  table{
+    width:100%;border-collapse:collapse;margin:25px 0;box-shadow:0 4px 8px rgba(0,0,0,.05);
+  }
+  th,td{border:1px solid #ddd;padding:12px;text-align:left;}
+  th{background:#f9f9f9;font-weight:600;}
+  tr:nth-child(even){background:#fdfdfd;}
+
+  img{
+    max-width:100%;height:auto;border:1px solid #ddd;border-radius:4px;margin:15px auto;display:block;
+    box-shadow:0 4px 8px rgba(0,0,0,.1);
+  }
+  /* Inline small icon image used inside text (overrides general img rules) */
+  .inline-icon{
+    width:22px;height:auto;vertical-align:-4px;margin:0 2px 0 6px;
+    border:none;box-shadow:none;display:inline;
+  }
+
+  .note,.warning{
+    padding:15px 20px;margin:20px 0;border-radius:5px;box-shadow:0 2px 4px rgba(0,0,0,.05);
+  }
+  .note{border-left:5px solid #007bff;background:#e7f3ff;}
+  .warning{border-left:5px solid #ffc107;background:#fff9e6;}
+  .muted{color:#6c757d;font-size:.95em;}
+
+  #doc-header{
+    text-align:center;margin-bottom:40px;padding:20px 0;border-bottom:1px solid var(--border-color);
+  }
+  #doc-header p{font-size:1.05em;margin:5px 0;}
+
+  /* Figures */
+  figure{text-align:center;}
+  figcaption{display:block;text-align:center;color:#6c757d;font-size:.9em;margin-top:6px;}
+  .fig-grid{display:grid;grid-template-columns:1fr;gap:12px;}
+
+  /* Responsive */
+  @media (max-width: 992px){
+    :root{--sidebar-width:220px;}
+    #page-header{padding:0 20px 0 calc(var(--sidebar-width) + 20px);}
+    #page-header h1{font-size:1.2em;}
+  }
+  @media (max-width: 768px){
+    #page-header{padding:0 15px;justify-content:center;}
+    #page-header h1{display:none;}
+    #sidebar{display:none;}
+    #main-content{margin-left:0;width:100%;padding:15px;padding-top:var(--header-height);}
+  }
+</style>
+
+</head>
+<body>
+
+<header id="page-header">
+  <h1 class="lang-zh active-lang">PreMap 用户手册</h1>
+  <h1 class="lang-en">PreMap User Manual</h1>
+  <div class="lang-switcher"><button id="lang-toggle-btn">Switch to English</button></div>
+</header>
+
+<nav id="sidebar">
+  <h3 class="lang-zh active-lang">目录</h3>
+  <h3 class="lang-en">Table of Contents</h3>
+  <ul id="toc">
+    <li><a href="#license"><span class="lang-zh active-lang">使用许可</span><span class="lang-en">License</span></a></li>
+
+    <li><a href="#overview"><span class="lang-zh active-lang">1. 简介与定位</span><span class="lang-en">1. Introduction and Positioning</span></a>
+      <ul>
+        <li><a href="#overview-1-1"><span class="lang-zh active-lang">1.1 软件简介</span><span class="lang-en">1.1 Software Introduction</span></a></li>
+        <li><a href="#overview-1-2"><span class="lang-zh active-lang">1.2 目标读者与前置知识</span><span class="lang-en">1.2 Target Audience &amp; Prerequisites</span></a></li>
+        <li><a href="#overview-1-3"><span class="lang-zh active-lang">1.3 功能亮点与适用边界</span><span class="lang-en">1.3 Features &amp; Scope</span></a></li>
+        <li><a href="#overview-1-5"><span class="lang-zh active-lang">1.4 引用与致谢方式</span><span class="lang-en">1.4 Citation &amp; Acknowledgments</span></a></li>
+      </ul>
+    </li>
+
+    <li><a href="#requirements"><span class="lang-zh active-lang">2. 支持平台与系统要求</span><span class="lang-en">2. Supported Platforms &amp; System Requirements</span></a></li>
+    <li><a href="#installation"><span class="lang-zh active-lang">3. 安装与环境配置</span><span class="lang-en">3. Installation &amp; Configuration</span></a></li>
+    <li><a href="#quickstart"><span class="lang-zh active-lang">4. 快速开始</span><span class="lang-en">4. Quick Start</span></a></li>
+    <li><a href="#terms"><span class="lang-zh active-lang">5. 名词与约定</span><span class="lang-en">5. Terms &amp; Conventions</span></a></li>
+    <li><a href="#workflow"><span class="lang-zh active-lang">6. 工作流程总览</span><span class="lang-en">6. Workflow Overview</span></a></li>
+
+    <li><a href="#step0"><span class="lang-zh active-lang">7. Step0 — SNP 数据准备（Linux 专用）</span><span class="lang-en">7. Step0 — SNP Data Preparation (Linux Only)</span></a>
+      <ul>
+        <li><a href="#step0_indel"><span class="lang-zh active-lang">7.8 Step0 — 任意类型标记的准备（以 INDEL 为例）</span><span class="lang-en">7.8 Step0 — Preparing Any Marker Type (INDEL Example)</span></a></li>
+      </ul>
+    </li>
+
+    <li><a href="#step0_5"><span class="lang-zh active-lang">8. Step0_5 — 为分离位点添加统计指标</span><span class="lang-en">8. Step0_5 — Adding Statistics to Segregating Loci</span></a></li>
+    <li><a href="#step1"><span class="lang-zh active-lang">9. Step1 — 清洗与过滤</span><span class="lang-en">9. Step1 — Cleaning &amp; Filtering</span></a></li>
+    <li><a href="#step2"><span class="lang-zh active-lang">10. Step2 — 相位调整与聚类清洗</span><span class="lang-en">10. Step2 — Phasing &amp; Cluster Cleaning</span></a></li>
+    <li><a href="#step3"><span class="lang-zh active-lang">11. Step3 — Binning（断点识别）</span><span class="lang-en">11. Step3 — Binning (Breakpoint Identification)</span></a></li>
+    <li><a href="#step4"><span class="lang-zh active-lang">12. Step4 — OneBins Processor（基因型矫正与填补）</span><span class="lang-en">12. Step4 — OneBins Processor (Genotype Correction &amp; Imputation)</span></a></li>
+    <li><a href="#step-addition"><span class="lang-zh active-lang">13. Step-Addition — Additional Calculation（测序数据专用）</span><span class="lang-en">13. Step-Addition — Additional Calculation (Sequencing Data Only)</span></a></li>
+
+    <li><a href="#glossary"><span class="lang-zh active-lang">14. 术语表</span><span class="lang-en">14. Glossary</span></a></li>
+    <li><a href="#templates"><span class="lang-zh active-lang">15. 输入模板</span><span class="lang-en">15. Input Templates</span></a></li>
+    <li><a href="#cheatsheet"><span class="lang-zh active-lang">16. 参数速查表</span><span class="lang-en">16. Parameter Cheat Sheet</span></a></li>
+    <li><a href="#commands"><span class="lang-zh active-lang">17. 命令合集</span><span class="lang-en">17. Command Cookbook</span></a></li>
+    <li><a href="#support"><span class="lang-zh active-lang">18. 支持与反馈</span><span class="lang-en">18. Support &amp; Feedback</span></a></li>
+  </ul>
+</nav>
+
+<div id="main-content">
+  <!-- 顶部文档抬头 -->
+  <header id="doc-header">
+    <h1 class="lang-zh active-lang">PreMap 用户手册</h1>
+    <p class="lang-zh active-lang"><strong>用于二倍体李属 (<em>Prunus</em>) 全同胞家系的遗传信息处理与数据清洗软件</strong></p>
+    <h1 class="lang-en">PreMap User Manual</h1>
+    <p class="lang-en"><strong>Software for Genetic Information Processing and Data Cleaning in Diploid <em>Prunus</em> Full-Sib Families</strong></p>
+    <p><span class="lang-zh active-lang">版本：v1.0 (2025年7月)</span><span class="lang-en">Version: v1.0 (July 2025)</span></p>
+    <p><span class="lang-zh active-lang">作者：范家琪</span><span class="lang-en">Author: Jiaqi Fan</span></p>
+    <p><span class="lang-zh active-lang">开发团队：桃种质资源与育种创新团队</span><span class="lang-en">Development Team: Peach Germplasm Resources and Breeding Innovation Team</span></p>
+    <p><span class="lang-zh active-lang">共创团队：IRTA 蔷薇科遗传与基因组研究团队</span><span class="lang-en">Collaborating Team: IRTA Rosaceae Genetics and Genomics Research Team</span></p>
+  </header>
+
+  <!-- 1 License -->
+  <section id="license">
+    <h2 class="lang-zh active-lang">使用许可</h2>
+    <h2 class="lang-en">License</h2>
+    <p class="lang-zh active-lang">本软件仅授权用于以下目的：</p>
+    <p class="lang-en">This software is licensed only for the following purposes:</p>
+    <ul>
+      <li class="lang-zh active-lang">高校及科研机构进行的学术研究</li>
+      <li class="lang-en">Academic research conducted by universities and scientific institutions</li>
+      <li class="lang-zh active-lang">种质资源研究、遗传图谱构建、分子育种等非商业育种活动</li>
+      <li class="lang-en">Non-commercial breeding activities such as germplasm research, genetic map construction, and molecular breeding</li>
+    </ul>
+    <div class="warning">
+      <p class="lang-zh active-lang">在以上授权范围内，可免费使用本软件，但必须遵守以下限制：</p>
+      <p class="lang-en">Within the scope of this license, the software can be used free of charge, but the following restrictions must be observed:</p>
+      <ul>
+        <li class="lang-zh active-lang">不得以任何形式修改、反编译或破解本软件；</li>
+        <li class="lang-en">You may not modify, decompile, or reverse engineer the software in any form;</li>
+        <li class="lang-zh active-lang">不得将本软件及其源代码、可执行文件、输出结果用于商业用途；</li>
+        <li class="lang-en">You may not use the software, its source code, executable files, or output results for commercial purposes;</li>
+        <li class="lang-zh active-lang">不得擅自分发、复制、转载或以其他形式公开传播本软件的全部或部分内容；</li>
+        <li class="lang-en">You may not distribute, copy, reproduce, or otherwise publicly disseminate all or part of the software without authorization;</li>
+        <li class="lang-zh active-lang">不得嵌入或整合本软件于其他公开发布的软件系统中。</li>
+        <li class="lang-en">You may not embed or integrate the software into other publicly released software systems.</li>
+      </ul>
+    </div>
+    <div class="note">
+      <p class="lang-zh active-lang">如需获取<strong>商业授权</strong>、<strong>集成授权</strong>或<strong>其他特殊用途授权</strong>，请联系作者：<a href="mailto:fjq690510307@gmail.com">fjq690510307@gmail.com</a></p>
+      <p class="lang-en">For <strong>commercial licenses</strong>, <strong>integration licenses</strong>, or <strong>other special-purpose authorizations</strong>, please contact the author: <a href="mailto:fjq690510307@gmail.com">fjq690510307@gmail.com</a></p>
+    </div>
+  </section>
+
+<section id="overview">
+  <h2 class="lang-zh active-lang">1. 简介与定位</h2>
+  <h2 class="lang-en">1. Introduction and Positioning</h2>
+
+  <p class="lang-zh active-lang">
+    PreMap 是一个面向二倍体李属（<em>Prunus</em>）全同胞家系的数据处理与基因型清洗软件，提供从 VCF/Excel 到“数据集分类清洗过滤 → 连锁相位自动校正 → 重组断点识别 → Bin 划分错误校正与缺失基因型补充 → Bin 信息汇总”的端到端流程；它能够接受符合二等位表达与编码模式的任意类型标记，输出结果可直接用于主流图谱计算软件，且结果稳定，其作用不止用于连锁图谱的构建。
+  </p>
+  <p class="lang-en">
+    PreMap is a data processing and genotype cleaning software for diploid <em>Prunus</em> full-sib families. It provides an end-to-end workflow from VCF/Excel to “dataset classification, cleaning, and filtering → automatic linkage phase correction → recombination breakpoint identification → bin error correction and missing genotype imputation → bin information summarization.” It accepts any marker type following a biallelic expression/coding scheme. Outputs are directly compatible with mainstream mapping software and are useful beyond linkage-map construction.
+  </p>
+
+  <ul>
+    <li class="lang-zh active-lang"><strong>输入</strong>：VCF 4.2+（SNP/INDEL 等二等位位点）、按染色体拆分的 Excel 矩阵。</li>
+    <li class="lang-en"><strong>Input</strong>: VCF 4.2+ (SNP/INDEL and other biallelic sites), Excel matrices split by chromosome.</li>
+
+    <li class="lang-zh active-lang"><strong>输出</strong>：分离型位点矩阵、相位统一矩阵、重组断点与 <code>bins</code>、<code>onebins</code>、附加统计报表与图形。</li>
+    <li class="lang-en"><strong>Output</strong>: Segregating-loci matrix, phased matrix, recombination breakpoints and <code>bins</code>, <code>onebins</code>, plus additional statistical reports and figures.</li>
+
+    <li class="lang-zh active-lang"><strong>平台</strong>：Linux 与 Windows。</li>
+    <li class="lang-en"><strong>Platform</strong>: Linux and Windows.</li>
+
+    <li class="lang-zh active-lang"><strong>许可</strong>：非商业学术与育种研究免费使用；详见“许可证”。</li>
+    <li class="lang-en"><strong>License</strong>: Free for non-commercial academic and breeding research; see “License”.</li>
+  </ul>
+
+  <!-- Anchor for 1.1 (works for both languages) -->
+  <span id="overview-1-1" class="anchor-target"></span>
+  <h3 class="lang-zh active-lang">1.1 软件简介</h3>
+  <h3 class="lang-en">1.1 Software Introduction</h3>
+  <p class="lang-zh active-lang"><strong>核心定位</strong>：将高通量变异表（VCF）或自备标记信息，转换为生物学可解释且下游友好的基因型矩阵。</p>
+  <p class="lang-en"><strong>Core positioning</strong>: Transform high-throughput variant tables (VCF) or custom marker data into biologically interpretable, downstream-friendly genotype matrices.</p>
+
+  <p class="lang-zh active-lang"><strong>处理路径</strong>：A/H/B 编码 → 规则化清洗 → 相位校正 → 识别重组 → 最小重组单位划定 → bin marker 校正与填充 → 生成 onebins 矩阵。</p>
+  <p class="lang-en"><strong>Processing path</strong>: A/H/B coding → rule-based cleaning → phase correction → recombination detection → delineation of minimal recombination units → bin-marker correction and imputation → generation of the <code>onebins</code> matrix.</p>
+
+  <h4 class="lang-zh active-lang">模块一览</h4>
+  <h4 class="lang-en">Module overview</h4>
+  <ul>
+    <li class="lang-zh active-lang"><strong>Step0 / Step0_Indel</strong>：VCF 规范化与拆分，生成转码后的标记矩阵并按染色体以 Excel 保存。</li>
+    <li class="lang-en"><strong>Step0 / Step0_Indel</strong>: Normalize and split VCF; produce recoded marker matrices and save per chromosome in Excel.</li>
+
+    <li class="lang-zh active-lang"><strong>Step0_5</strong>：为每个位点计算 A/H/B/缺失 计数与基因型频率。</li>
+    <li class="lang-en"><strong>Step0_5</strong>: Compute A/H/B/missing counts and genotype frequencies for each locus.</li>
+
+    <li class="lang-zh active-lang"><strong>Step1</strong>：按缺失、错误率与频率阈值清洗；以伪测交策略逐步划分 1:1、1:2:1、Parent1/Parent2 标记矩阵。</li>
+    <li class="lang-en"><strong>Step1</strong>: Clean by missingness, error rate, and frequency thresholds; using a pseudo-testcross strategy, progressively derive 1:1, 1:2:1, and Parent1/Parent2 matrices.</li>
+
+    <li class="lang-zh active-lang"><strong>Step2</strong>：基于相似性阈值的相位调整与聚类清洗；进行连锁相位校正与 IBD 片段识别。</li>
+    <li class="lang-en"><strong>Step2</strong>: Similarity-threshold-based phase adjustment and cluster cleaning; linkage-phase correction and IBD fragment identification.</li>
+
+    <li class="lang-zh active-lang"><strong>Step3</strong>：Binning——个体水平的重组断点识别。</li>
+    <li class="lang-en"><strong>Step3</strong>: Binning — individual-level recombination breakpoint identification.</li>
+
+    <li class="lang-zh active-lang"><strong>Step4</strong>：OneBins——群体水平最小重组单位与 bin marker 鉴定；轻度纠错与缺失填补；记录修改历史。</li>
+    <li class="lang-en"><strong>Step4</strong>: OneBins — population-level minimal recombination unit and bin-marker identification; mild correction and imputation; full change logging.</li>
+
+    <li class="lang-zh active-lang"><strong>Step-Addition</strong>：附加统计（测序专用），按修改事件高低筛查可能未成功杂交/污染个体。</li>
+    <li class="lang-en"><strong>Step-Addition</strong>: Additional statistics (sequencing only) to flag potential non-hybrid/contaminated individuals by modification-event burden.</li>
+  </ul>
+
+  <!-- Anchor for 1.2 -->
+  <span id="overview-1-2" class="anchor-target"></span>
+  <h3 class="lang-zh active-lang">1.2 目标读者与前置知识</h3>
+  <h3 class="lang-en">1.2 Target Audience &amp; Prerequisites</h3>
+
+  <h4 class="lang-zh active-lang">目标读者</h4>
+  <h4 class="lang-en">Target audience</h4>
+  <ul>
+    <li class="lang-zh active-lang">遗传学与分子育种研究人员（含研究生与一线技术人员）。</li>
+    <li class="lang-en">Genetics and molecular-breeding researchers (including graduate students and lab/field technicians).</li>
+
+    <li class="lang-zh active-lang">需要将 VCF 清洗为连锁分析/图谱构建输入的普通用户。</li>
+    <li class="lang-en">Users who need to clean VCFs for linkage analysis/map construction.</li>
+
+    <li class="lang-zh active-lang">不面向通用软件开发者或需要自定义算法者。</li>
+    <li class="lang-en">Not intended for general-purpose software developers or users requiring custom algorithms.</li>
+  </ul>
+
+  <h4 class="lang-zh active-lang">前置知识</h4>
+  <h4 class="lang-en">Prerequisites</h4>
+  <ul>
+    <li class="lang-zh active-lang">群体类型：图谱构建策略、亲本信息、遗传图谱的一般知识背景。</li>
+    <li class="lang-en">Population types: mapping strategies, parental information, and general knowledge of genetic maps.</li>
+
+    <li class="lang-zh active-lang">文件与格式：VCF 4.2+、Excel；A/H/B 编码规则。</li>
+    <li class="lang-en">Files &amp; formats: VCF 4.2+, Excel; A/H/B coding rules.</li>
+  </ul>
+
+  <!-- Anchor for 1.3 -->
+  <span id="overview-1-3" class="anchor-target"></span>
+  <h3 class="lang-zh active-lang">1.3 功能亮点与适用边界</h3>
+  <h3 class="lang-en">1.3 Features &amp; Scope</h3>
+
+  <h4 class="lang-zh active-lang">亮点</h4>
+  <h4 class="lang-en">Highlights</h4>
+  <ul>
+    <li class="lang-zh active-lang">双通道输入：SNP 与 INDEL（及符合二等位表达与编码模式的任意标记）。</li>
+    <li class="lang-en">Dual input channels: SNP and INDEL (and any biallelic markers following the coding scheme).</li>
+
+    <li class="lang-zh active-lang">可视化友好：按染色体拆分的 Excel、GUI 操作、下划线断点标注。</li>
+    <li class="lang-en">Visualization-friendly: per-chromosome Excel, GUI operations, and underline markers for breakpoints.</li>
+
+    <li class="lang-zh active-lang">相位与聚类：s/l/m 三阈值控制，稳健相位矫正及 IBD 识别。</li>
+    <li class="lang-en">Phasing &amp; clustering: s/l/m triple-threshold control, robust phase correction and IBD detection.</li>
+
+    <li class="lang-zh active-lang">可追溯性：重组断点划分、标记修正与补缺全过程留痕。</li>
+    <li class="lang-en">Traceability: full audit trail for breakpoint partitioning, correction, and imputation.</li>
+
+    <li class="lang-zh active-lang">附加统计：快速圈定异常个体（潜在未成功杂交/污染）。</li>
+    <li class="lang-en">Additional stats: quickly narrow down abnormal individuals (potential non-hybrids/contaminants).</li>
+  </ul>
+
+  <h4 class="lang-zh active-lang">边界</h4>
+  <h4 class="lang-en">Boundaries</h4>
+  <ul>
+    <li class="lang-zh active-lang">主要适用对象：二倍体 &amp; 全同胞家系；多倍体/复杂群体未验证。</li>
+    <li class="lang-en">Primary scope: diploids &amp; full-sib families; polyploids/complex populations are unvalidated.</li>
+
+    <li class="lang-zh active-lang">不负责变异检测（VCF 由外部流程产出）。</li>
+    <li class="lang-en">Variant calling is out of scope (VCFs come from external pipelines).</li>
+
+    <li class="lang-zh active-lang">Step0 仅支持 Linux（因数据量与内存需求）。</li>
+    <li class="lang-en">Step0 is Linux-only (due to data volume and memory requirements).</li>
+
+    <li class="lang-zh active-lang">建议结合生物学知识与实验记录进行复核。</li>
+    <li class="lang-en">Cross-check with biological knowledge and lab records is recommended.</li>
+  </ul>
+
+  <!-- Anchor for 1.4 / 1.5 (your numbering uses 1.4 for citation) -->
+  <span id="overview-1-5" class="anchor-target"></span>
+  <h3 class="lang-zh active-lang">1.4 引用与致谢方式</h3>
+  <h3 class="lang-en">1.4 Citation &amp; Acknowledgments</h3>
+
+  <p class="lang-zh active-lang"><strong>软件操作逻辑参考</strong>：JIAQI FAN, JINLONG WU, PERE ARÚS, YONG LI, KE CAO, LIRONG WANG, 2025. Integrating whole-genome resequencing and machine learning to refine QTL analysis for fruit quality traits in peach. <em>Horticulture Research</em> <strong>12(7)</strong>: uhaf087. https://doi.org/10.1093/hr/uhaf087.</p>
+  <p class="lang-en"><strong>Reference for software operation logic</strong>: JIAQI FAN, JINLONG WU, PERE ARÚS, YONG LI, KE CAO, LIRONG WANG, 2025. Integrating whole-genome resequencing and machine learning to refine QTL analysis for fruit quality traits in peach. <em>Horticulture Research</em> <strong>12(7)</strong>: uhaf087. https://doi.org/10.1093/hr/uhaf087.</p>
+
+  <p class="lang-zh active-lang"><strong>Github</strong>：<a href="https://github.com/fanjiaqi777/PreMap-V1.0-release" target="_blank">https://github.com/fanjiaqi777/PreMap-V1.0-release</a></p>
+  <p class="lang-en"><strong>Github</strong>: <a href="https://github.com/fanjiaqi777/PreMap-V1.0-release" target="_blank">https://github.com/fanjiaqi777/PreMap-V1.0-release</a></p>
+
+  <p class="lang-zh active-lang"><strong>测试数据集（可复现）</strong>：
+    <a href="https://doi.org/10.6084/m9.figshare.30043073.v2" target="_blank" rel="noopener noreferrer">
+      https://doi.org/10.6084/m9.figshare.30043073.v2
+    </a>
+  </p>
+  <p class="lang-en"><strong>Test dataset (reproducible)</strong>:
+    <a href="https://doi.org/10.6084/m9.figshare.30043073.v2" target="_blank" rel="noopener noreferrer">
+      https://doi.org/10.6084/m9.figshare.30043073.v2
+    </a>
+  </p>
+
+  <h4 class="lang-zh active-lang">致谢</h4>
+  <h4 class="lang-en">Acknowledgments</h4>
+  <ul>
+    <li class="lang-zh active-lang">开发团队：桃种质资源与育种创新团队</li>
+    <li class="lang-en">Development team: Peach Germplasm Resources and Breeding Innovation Team</li>
+
+    <li class="lang-zh active-lang">共创团队：蔷薇科遗传与基因组研究团队（IRTA）</li>
+    <li class="lang-en">Co-creation team: IRTA Rosaceae Genetics and Genomics Research Team</li>
+
+    <li class="lang-zh active-lang">预处理建议中参考的第三方工具/规范：VCF 4.2+ 规范、bcftools、vcftools</li>
+    <li class="lang-en">Third-party tools/specs referenced for preprocessing: VCF 4.2+ spec, bcftools, vcftools</li>
+  </ul>
+</section>
+
+
+  <!-- 2 -->
+  <section id="requirements">
+  <h2 class="lang-zh active-lang">2. 支持平台与系统要求</h2>
+  <h2 class="lang-en">2. Supported Platforms &amp; System Requirements</h2>
+
+  <h3 id="requirements-2-1" class="lang-zh active-lang">2.1 支持操作系统</h3>
+  <h3 class="lang-en">2.1 Supported Operating Systems</h3>
+  <ul>
+    <li class="lang-zh active-lang"><strong>Linux</strong>：推荐 Ubuntu 20.04+ / CentOS 7+ / RockyLinux 8+（x86_64）。</li>
+    <li class="lang-en"><strong>Linux</strong>: Recommended Ubuntu 20.04+ / CentOS 7+ / RockyLinux 8+ (x86_64).</li>
+
+    <li class="lang-zh active-lang"><strong>Windows</strong>：Windows 10 / 11（x64）。</li>
+    <li class="lang-en"><strong>Windows</strong>: Windows 10 / 11 (x64).</li>
+  </ul>
+
+  <div class="warning">
+    <p class="lang-zh active-lang">提醒：<code>Step0</code> 仅支持 Linux（数据量大、内存占用高）；其余模块 Linux / Windows 皆可。</p>
+    <p class="lang-en">Note: <code>Step0</code> is Linux-only (large data volume and high memory usage). Other modules run on both Linux and Windows.</p>
+  </div>
+
+  <h3 id="requirements-2-2" class="lang-zh active-lang">2.2 最低与推荐配置</h3>
+  <div class="lang-zh active-lang">
+    <table>
+      <thead>
+        <tr>
+          <th>数据规模 Scale</th>
+          <th>典型样本数 Samples</th>
+          <th>最低配置 Minimum</th>
+          <th>推荐配置 Recommended</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>小</td>
+          <td>≤150</td>
+          <td>4 核 CPU，8 GB RAM，20 GB 可用磁盘；Linux 或 Windows</td>
+          <td>8 核 CPU，8 GB RAM，SSD 20 GB</td>
+        </tr>
+        <tr>
+          <td>中</td>
+          <td>150–400</td>
+          <td>8 核 CPU，32 GB RAM，100 GB 磁盘；<strong>Step0 建议 Linux</strong></td>
+          <td>16 核 CPU，64 GB RAM，SSD 200 GB</td>
+        </tr>
+        <tr>
+          <td>大</td>
+          <td>≥400</td>
+          <td>16 核 CPU，64 GB RAM，SSD 200 GB；<strong>Step0 仅 Linux</strong></td>
+          <td>24–32 核 CPU，128 GB RAM，SSD/NVMe 500 GB+</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="lang-en">2.2 Minimum &amp; Recommended Specs</h3>
+  <div class="lang-en">
+    <table>
+      <thead>
+        <tr>
+          <th>Scale</th>
+          <th>Typical Samples</th>
+          <th>Minimum</th>
+          <th>Recommended</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Small</td>
+          <td>≤150</td>
+          <td>8-core CPU, 8 GB RAM, 20 GB free disk; Linux or Windows</td>
+          <td>8-core CPU, 8 GB RAM, 20 GB SSD</td>
+        </tr>
+        <tr>
+          <td>Medium</td>
+          <td>150–400</td>
+          <td>8-core CPU, 32 GB RAM, 100 GB disk; <strong>Linux recommended for Step0</strong></td>
+          <td>16-core CPU, 64 GB RAM, 200 GB SSD</td>
+        </tr>
+        <tr>
+          <td>Large</td>
+          <td>≥400</td>
+          <td>16-core CPU, 64 GB RAM, 200 GB SSD; <strong>Step0 Linux only</strong></td>
+          <td>24–32-core CPU, 128 GB RAM, 500 GB+ SSD/NVMe</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 id="requirements-2-3" class="lang-zh active-lang">2.3 运行环境与依赖版本</h3>
+  <ul>
+    <li class="lang-zh active-lang"><strong>打包版（推荐）</strong>：发布包内的 <code>dist/</code> 可执行文件为静态/半静态构建，无需额外运行时。</li>
+    <li class="lang-en"><strong>Packaged build (recommended)</strong>: Executables in <code>dist/</code> are static/semi-static builds; no extra runtime required.</li>
+
+    <li class="lang-zh active-lang"><strong>外部工具（可选，Step0 预处理）</strong>：若采用文档中的建议预处理命令，请自备 <code>bcftools</code> / <code>vcftools</code>。</li>
+    <li class="lang-en"><strong>External tools (optional, for Step0 preprocessing)</strong>: If you follow the suggested commands, please have <code>bcftools</code> / <code>vcftools</code> installed.</li>
+
+    <li class="lang-zh active-lang"><strong>字体/Excel</strong>：结果为 <code>.xlsx</code>；建议使用 Microsoft Excel / WPS / LibreOffice 打开。</li>
+    <li class="lang-en"><strong>Fonts/Excel</strong>: Outputs are <code>.xlsx</code>; recommended viewers: Microsoft Excel / WPS / LibreOffice.</li>
+  </ul>
+</section>
+
+
+  <!-- 3 -->
+<section id="installation">
+  <h2 class="lang-zh active-lang">3. 安装与环境配置</h2>
+  <h2 class="lang-en">3. Installation and Configuration</h2>
+
+  <h3 class="lang-zh active-lang">3.1 Windows 安装</h3>
+  <h3 class="lang-en">3.1 Windows Installation</h3>
+
+  <h4 class="lang-zh active-lang">3.1.1 可执行版与路径注意</h4>
+  <h4 class="lang-en">3.1.1 Executable and Path Notes</h4>
+
+  <ol>
+    <li class="lang-zh active-lang">
+      下载 exe 发行包（<code>PreMap_v1.0.exe</code>；<a href="https://github.com/fanjiaqi777/PreMap-V1.0-release/releases/tag/v1.0" target="_blank" rel="noopener noreferrer">发布页</a>）。
+    </li>
+    <li class="lang-en">
+      Download the exe release (<code>PreMap_v1.0.exe</code>; see the <a href="https://github.com/fanjiaqi777/PreMap-V1.0-release/releases/tag/v1.0" target="_blank" rel="noopener noreferrer">release page</a>).
+    </li>
+
+    <li class="lang-zh active-lang">
+      双击运行安装向导，按提示点击 OK 进行安装。
+      <img class="inline-icon"
+           src="https://raw.githubusercontent.com/fanjiaqi777/PreMap-V1.0-release/main/images/install-win.jpg"
+           alt="安装向导 OK 按钮示意" loading="lazy">
+    </li>
+    <li class="lang-en">
+      Double-click to launch the installer and click OK when prompted.
+      <img class="inline-icon"
+           src="https://raw.githubusercontent.com/fanjiaqi777/PreMap-V1.0-release/main/images/install-win.jpg"
+           alt="Installer OK button illustration" loading="lazy">
+    </li>
+
+    <li class="lang-zh active-lang"><strong>路径建议</strong>：若默认路径无写入权限，建议修改到可编辑路径。</li>
+    <li class="lang-en"><strong>Path tip</strong>: If the default install path lacks write permission, choose a user-writable path.</li>
+  </ol>
+
+  <h4 class="lang-zh active-lang">3.1.2 命令行运行（可选）</h4>
+  <h4 class="lang-en">3.1.2 Command-line Usage (Optional)</h4>
+  <p class="lang-zh active-lang">（待补充，如需在 Windows 终端/PowerShell 下调用命令行，可在此补充示例。）</p>
+  <p class="lang-en">(To be added. If you plan to run via Windows Terminal/PowerShell, examples can be placed here.)</p>
+
+  <h3 class="lang-zh active-lang">3.2 Linux 安装</h3>
+  <h3 class="lang-en">3.2 Linux Installation</h3>
+  <p class="lang-zh active-lang">解压 <code>PreMap-v1-dist.tar.gz</code> 后可直接执行，无需环境配置：</p>
+<p class="lang-en">Extract <code>PreMap-v1-dist.tar.gz</code> and run directly—no extra environment setup needed:</p>
+
+<pre class="lang-zh active-lang"><code>tar -xzf PreMap-v1-dist.tar.gz
+cd PreMap-v1-dist
+# 赋权（如需）
+chmod +x ./dist/run_step*</code></pre>
+
+<pre class="lang-en"><code>tar -xzf PreMap-v1-dist.tar.gz
+cd PreMap-v1-dist
+# make executable (if needed)
+chmod +x ./dist/run_step*</code></pre>
+
+
+  <h4 class="lang-zh active-lang">依赖安装与验证（Dependencies &amp; Verification）</h4>
+<h4 class="lang-en">Dependencies &amp; Verification</h4>
+
+<pre class="lang-zh active-lang"><code>./dist/run_step1 --help
+./dist/run_step2 --help</code></pre>
+
+<pre class="lang-en"><code>./dist/run_step1 --help
+./dist/run_step2 --help</code></pre>
+
+</section>
+
+
+  <!-- 4 -->
+<section id="quickstart">
+  <h2 class="lang-zh active-lang">4. 快速开始</h2>
+  <h2 class="lang-en">4. Quick Start</h2>
+
+<h3 class="lang-zh active-lang">4.1 一条命令跑通（One-Command Run）</h3>
+<h3 class="lang-en">4.1 One-Command Run</h3>
+
+<pre class="lang-zh active-lang"><code># Step1：清洗与分型
+./dist/run_step1 -i Pp01_processed_for_step1.xlsx
+
+# Step2：相位调整（对 Parent1 与 Parent2 各跑一次）
+./dist/run_step2 -i Parent1.xlsx -s 0.90 -l 0.05 -m 0.15
+
+# Step3：Binning（1:1 与 1:2:1 流程）
+./dist/run_step3 -i Parent1_phased.xlsx -o 1
+./dist/run_step3 -i 1to2to1.xlsx -o 2
+
+# Step4：OneBins
+./dist/run_step4 -i Parent1_bins.xlsx</code></pre>
+
+<pre class="lang-en"><code># Step1: Cleaning & typing
+./dist/run_step1 -i Pp01_processed_for_step1.xlsx
+
+# Step2: Phasing (run once for Parent1 and once for Parent2)
+./dist/run_step2 -i Parent1.xlsx -s 0.90 -l 0.05 -m 0.15
+
+# Step3: Binning (1:1 and 1:2:1 workflows)
+./dist/run_step3 -i Parent1_phased.xlsx -o 1
+./dist/run_step3 -i 1to2to1.xlsx -o 2
+
+# Step4: OneBins
+./dist/run_step4 -i Parent1_bins.xlsx</code></pre>
+
+  <h3 class="lang-zh active-lang">4.2 常见坑与提示（Quick Tips）</h3>
+  <h3 class="lang-en">4.2 Quick Tips</h3>
+  <ul>
+    <li class="lang-zh active-lang">Windows GUI 若出现无法写入，建议重新安装 exe 并选择其他安装路径。</li>
+    <li class="lang-en">If the Windows GUI cannot write files, reinstall the exe and choose a different install path.</li>
+
+    <li class="lang-zh active-lang">Step1 表头区分大小写；若缺少统计列请先运行 <code>Step0_5</code>。</li>
+    <li class="lang-en">Step1 headers are case-sensitive; if statistics columns are missing, run <code>Step0_5</code> first.</li>
+
+    <li class="lang-zh active-lang">Step2 的 s/l/m：不确定时可从 <code>s≈0.90</code>，<code>l≈0.01–0.02</code>，<code>m≈0.10</code> 起步，再结合 <code>Reoriented_Clusters</code> 调整。</li>
+    <li class="lang-en">For Step2 thresholds s/l/m: start with <code>s≈0.90</code>, <code>l≈0.01–0.02</code>, <code>m≈0.10</code>, then refine using <code>Reoriented_Clusters</code>.</li>
+
+    <li class="lang-zh active-lang">Step3 若人工调整 <code>bins</code>，务必同步维护 <code>bins-record</code>。</li>
+    <li class="lang-en">If you manually edit <code>bins</code> in Step3, keep <code>bins-record</code> in sync.</li>
+
+    <li class="lang-zh active-lang">测序数据质量建议：平均覆盖度 ≥15× 更稳健；低于此值请谨慎放宽缺失与错误率阈值。</li>
+    <li class="lang-en">Sequencing data quality: mean depth ≥15× is more robust; if lower, be cautious when relaxing missing/error-rate thresholds.</li>
+  </ul>
+</section>
+
+
+  <!-- 5 -->
+<section id="terms">
+  <h2 class="lang-zh active-lang">5. 名词与约定</h2>
+  <h2 class="lang-en">5. Terms and Conventions</h2>
+
+  <h3 class="lang-zh active-lang">5.1 A/H/B 编码说明（Genotype Coding）</h3>
+  <h3 class="lang-en">5.1 Genotype Coding (A/H/B)</h3>
+  <p class="lang-zh active-lang"><code>A</code>：ref/ref；<code>H</code>：ref/alt；<code>B</code>：alt/alt。</p>
+  <p class="lang-en"><code>A</code>: ref/ref; <code>H</code>: ref/alt; <code>B</code>: alt/alt.</p>
+
+  <h3 class="lang-zh active-lang">5.2 亲本与群体命名（Parents &amp; Population Naming）</h3>
+  <h3 class="lang-en">5.2 Parents &amp; Population Naming</h3>
+  <ul class="lang-zh active-lang">
+    <li>样本顺序：<strong>Female</strong> 在第 1 列，<strong>Male</strong> 在第 2 列；其后为子代 <code>Individual1…</code>。</li>
+    <li>群体/染色体命名示例：<code>Pp01</code>、<code>Pp02</code>…（与参考基因组一致）。</li>
+  </ul>
+  <ul class="lang-en">
+    <li>Sample order: <strong>Female</strong> in column 1, <strong>Male</strong> in column 2; followed by progeny <code>Individual1…</code>.</li>
+    <li>Population/chromosome naming examples: <code>Pp01</code>, <code>Pp02</code>, … (consistent with the reference genome).</li>
+  </ul>
+
+  <h3 class="lang-zh active-lang">5.3 染色体与坐标规范（Chromosome &amp; Coordinates）</h3>
+  <h3 class="lang-en">5.3 Chromosomes &amp; Coordinates</h3>
+  <ul class="lang-zh active-lang">
+    <li>示例使用 Lovell v2.0 等标准装配；<code>POS-2</code> 表示染色体内物理位置。</li>
+    <li>以分析中使用的参考基因组为准，无需统一到单一版本。</li>
+  </ul>
+  <ul class="lang-en">
+    <li>Examples use standard assemblies such as Lovell v2.0; <code>POS-2</code> denotes the physical position on the chromosome.</li>
+    <li>Use the reference genome version applied in your analysis; unification to a single version is not required.</li>
+  </ul>
+
+  <h3 class="lang-zh active-lang">5.4 文件与字段命名规则（File &amp; Header Naming Rules）</h3>
+  <h3 class="lang-en">5.4 File &amp; Header Naming Rules</h3>
+  <ul class="lang-zh active-lang">
+    <li>Step1 输入前 5 列表头（区分大小写）：<code>Number</code>, <code>CHR</code>, <code>POS-2</code>, <code>Female</code>, <code>Male</code>。</li>
+    <li><code>Step0_5</code> 会追加：<code>A_Count</code>, <code>H_Count</code>, <code>B_Count</code>, <code>-_Count</code>, <code>f(A)</code>, <code>f(H)</code>。</li>
+    <li>工作表命名：<code>step1</code>、<code>Parent1</code>、<code>Parent2</code>、<code>bins</code>、<code>bins-record</code>、<code>onebins</code>… <strong>请勿改名</strong>。</li>
+    <li>输出文件命名：<code>{input}_phased.xlsx</code>、<code>{input}_bins.xlsx</code>、<code>{input}_onebins.xlsx</code>、<code>{input}__processed.xlsx</code> 等；如需自定义可在命令中添加参数。</li>
+  </ul>
+  <ul class="lang-en">
+    <li>First 5 header columns for Step1 input (case-sensitive): <code>Number</code>, <code>CHR</code>, <code>POS-2</code>, <code>Female</code>, <code>Male</code>.</li>
+    <li><code>Step0_5</code> appends: <code>A_Count</code>, <code>H_Count</code>, <code>B_Count</code>, <code>-_Count</code>, <code>f(A)</code>, <code>f(H)</code>.</li>
+    <li>Worksheet names: <code>step1</code>, <code>Parent1</code>, <code>Parent2</code>, <code>bins</code>, <code>bins-record</code>, <code>onebins</code>. <strong>Do not rename</strong>.</li>
+    <li>Output filenames: <code>{input}_phased.xlsx</code>, <code>{input}_bins.xlsx</code>, <code>{input}_onebins.xlsx</code>, <code>{input}__processed.xlsx</code>. Add CLI parameters if you need custom names.</li>
+  </ul>
+</section>
+
+
+  <!-- 6 -->
+<section id="workflow">
+  <h2 class="lang-zh active-lang">6. 工作流程总览</h2>
+  <h2 class="lang-en">6. Workflow Overview</h2>
+
+  <h3 class="lang-zh active-lang">6.1 流程图</h3>
+  <h3 class="lang-en">6.1 Flowchart</h3>
+  <img src="https://raw.githubusercontent.com/fanjiaqi777/PreMap-V1.0-release/main/images/Pepline-eng-01.jpg" alt="PreMap 工作流总览">
+  <p class="lang-zh active-lang" style="text-align:center;"><em>图 6-1 PreMap 工作流总览</em></p>
+  <p class="lang-en" style="text-align:center;"><em>Fig. 6-1 Overview of the PreMap workflow</em></p>
+
+  <h3 class="lang-zh active-lang">6.2 步骤间输入输出关系（表 6-1）</h3>
+  <h3 class="lang-en">6.2 I/O Relationships Between Steps (Table 6-1)</h3>
+
+  <!-- 中文表格 -->
+  <table class="lang-zh active-lang">
+    <thead>
+      <tr>
+        <th>步骤 Step</th>
+        <th>输入 Input</th>
+        <th>输出 Output</th>
+        <th>备注 Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Step0</td>
+        <td>final_filtered_output.vcf</td>
+        <td>filtered_genotypes.vcf、extracted_genotypes.vcf、Pp01.xlsx、Pp01_processed.xlsx…</td>
+        <td>仅 Linux</td>
+      </tr>
+      <tr>
+        <td>Step0_5</td>
+        <td>*_processed.xlsx</td>
+        <td>*_processed_for_step1.xlsx</td>
+        <td>追加统计列</td>
+      </tr>
+      <tr>
+        <td>Step1</td>
+        <td>*_processed_for_step1.xlsx</td>
+        <td>Segregating loci、1 to 1、1 to 2 to 1、Parent1、Parent2（写回原文件）</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>Step2</td>
+        <td>Parent1.xlsx / Parent2.xlsx</td>
+        <td>{input}_phased.xlsx（5 张表）</td>
+        <td>s/l/m 调参与复核</td>
+      </tr>
+      <tr>
+        <td>Step3</td>
+        <td>{input}_phased.xlsx 或 1 to 2 to 1</td>
+        <td>{input}_bins.xlsx：bins、bins-record（bins-2）</td>
+        <td>下划线 = 断点</td>
+      </tr>
+      <tr>
+        <td>Step4</td>
+        <td>{input}_bins.xlsx</td>
+        <td>{input}_onebins.xlsx：onebins、bins_correction</td>
+        <td>建图友好</td>
+      </tr>
+      <tr>
+        <td>Step-Addition（可选）</td>
+        <td>Step2 单一亲本矩阵</td>
+        <td>{input}__processed.xlsx + plot.pdf</td>
+        <td>异常个体筛查</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 英文表格 -->
+  <table class="lang-en">
+    <thead>
+      <tr>
+        <th>Step</th>
+        <th>Input</th>
+        <th>Output</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Step0</td>
+        <td>final_filtered_output.vcf</td>
+        <td>filtered_genotypes.vcf, extracted_genotypes.vcf, Pp01.xlsx, Pp01_processed.xlsx…</td>
+        <td>Linux only</td>
+      </tr>
+      <tr>
+        <td>Step0_5</td>
+        <td>*_processed.xlsx</td>
+        <td>*_processed_for_step1.xlsx</td>
+        <td>Add statistics columns</td>
+      </tr>
+      <tr>
+        <td>Step1</td>
+        <td>*_processed_for_step1.xlsx</td>
+        <td>Segregating loci, 1 to 1, 1 to 2 to 1, Parent1, Parent2 (written back to original workbook)</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>Step2</td>
+        <td>Parent1.xlsx / Parent2.xlsx</td>
+        <td>{input}_phased.xlsx (5 sheets)</td>
+        <td>Tune s/l/m and review</td>
+      </tr>
+      <tr>
+        <td>Step3</td>
+        <td>{input}_phased.xlsx or “1 to 2 to 1”</td>
+        <td>{input}_bins.xlsx: bins, bins-record (bins-2)</td>
+        <td>Underline = breakpoint</td>
+      </tr>
+      <tr>
+        <td>Step4</td>
+        <td>{input}_bins.xlsx</td>
+        <td>{input}_onebins.xlsx: onebins, bins_correction</td>
+        <td>Map-friendly</td>
+      </tr>
+      <tr>
+        <td>Step-Addition (optional)</td>
+        <td>Single-parent matrix from Step2</td>
+        <td>{input}__processed.xlsx + plot.pdf</td>
+        <td>Outlier individual screening</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+
+  <!-- 7 -->
+ <section id="step0">
+  <h2 class="lang-zh active-lang">7. Step0 — SNP 数据准备（Linux 专用）</h2>
+  <h2 class="lang-en">7. Step0 — SNP Data Preparation (Linux Only)</h2>
+
+  <h3 class="lang-zh active-lang">7.1 模块说明</h3>
+  <h3 class="lang-en">7.1 Module Description</h3>
+  <p class="lang-zh active-lang">本模块用于从标准 VCF 4.2+ 文件中提取并标准化基因型矩阵，只面向测序原始/合并后的 VCF。典型数据量较大，峰值内存常 ≥40 GB（与样本数和深度有关），因此不提供 Windows 版本。术语与编码规则见 §5（A/H/B 编码约定）。</p>
+  <p class="lang-en">This module extracts and normalizes genotype matrices from standard VCF 4.2+ files, intended for raw/merged sequencing VCFs. Typical datasets are large, with peak RAM often ≥40 GB (depending on sample count and depth), therefore no Windows version is provided. Terminology and coding follow §5 (A/H/B coding).</p>
+
+  <h3 class="lang-zh active-lang">7.2 推荐的预处理</h3>
+  <h3 class="lang-en">7.2 Recommended Preprocessing</h3>
+
+  <!-- 中文步骤 -->
+  <ol class="lang-zh active-lang">
+    <li>
+      <p><strong>常见低质量变异过滤</strong>（示例规则，仅供参考）：</p>
+      <pre><code>##FILTER=&lt;ID=SNP_filter,Description="QD &lt; 2.0 || MQ &lt; 40.0 || FS &gt; 60.0 || SOR &gt; 3.0 || MQRankSum &lt; -12.5 || ReadPosRankSum &lt; -8.0"&gt;</code></pre>
+      <p>实际阈值请按你的测序策略与软件建议调整。</p>
+    </li>
+    <li>
+      <p><strong>仅保留双等位位点</strong></p>
+      <pre><code>bcftools view -m2 -M2 input.vcf -o temp_filtered_single_alt.vcf</code></pre>
+    </li>
+    <li>
+      <p><strong>按次要等位基因频率过滤</strong>（示例：≥5%）</p>
+      <pre><code>vcftools --vcf temp_filtered_single_alt.vcf --maf 0.05 --recode --out final_filtered_output</code></pre>
+    </li>
+    <li>
+      <p><strong>样本顺序（必须）</strong>：母本为第 1 个样本，父本为第 2 个样本，其余均为子代；用于后续方向统一与编码。</p>
+    </li>
+  </ol>
+
+  <!-- 英文步骤 -->
+  <ol class="lang-en">
+    <li>
+      <p><strong>Filter common low-quality variants</strong> (example rule, for reference only):</p>
+      <pre><code>##FILTER=&lt;ID=SNP_filter,Description="QD &lt; 2.0 || MQ &lt; 40.0 || FS &gt; 60.0 || SOR &gt; 3.0 || MQRankSum &lt; -12.5 || ReadPosRankSum &lt; -8.0"&gt;</code></pre>
+      <p>Adjust thresholds according to your sequencing strategy and the recommendations of your variant-calling software.</p>
+    </li>
+    <li>
+      <p><strong>Keep only biallelic sites</strong></p>
+      <pre><code>bcftools view -m2 -M2 input.vcf -o temp_filtered_single_alt.vcf</code></pre>
+    </li>
+    <li>
+      <p><strong>Filter by minor allele frequency</strong> (example: ≥5%)</p>
+      <pre><code>vcftools --vcf temp_filtered_single_alt.vcf --maf 0.05 --recode --out final_filtered_output</code></pre>
+    </li>
+    <li>
+      <p><strong>Sample order (required)</strong>: the mother is the 1st sample, the father is the 2nd, and all others are progeny; used for downstream orientation and coding.</p>
+    </li>
+  </ol>
+
+  <h3 class="lang-zh active-lang">7.3 运行命令（Linux）</h3>
+  <h3 class="lang-en">7.3 Command (Linux)</h3>
+  <pre><code>./dist/run_step0 -i final_filtered_output.vcf</code></pre>
+
+  <h3 class="lang-zh active-lang">7.4 参数说明 / Parameters</h3>
+  <h3 class="lang-en">7.4 Parameters</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>参数 Parameter</th>
+        <th>说明 Description</th>
+        <th>是否必需 Required</th>
+        <th>默认值 Default</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>-i, --input</td>
+        <td>输入文件路径（VCF 4.2+） / Input VCF path</td>
+        <td>是 Yes</td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td>-o, --output</td>
+        <td>输出路径 / Output path</td>
+        <td>否 No</td>
+        <td>自动生成 <code>step0/</code> 文件夹</td>
+      </tr>
+      <tr>
+        <td>-x（例如 -x Pp01）</td>
+        <td>指定提取的单条染色体（如 Pp01） / Extract one chromosome</td>
+        <td>否 No</td>
+        <td>全基因组 / Whole genome</td>
+      </tr>
+      <tr>
+        <td>-h, --help</td>
+        <td>查看帮助信息 / Show help</td>
+        <td>否 No</td>
+        <td>—</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 class="lang-zh active-lang">7.5 输出与文件说明</h3>
+  <h3 class="lang-en">7.5 Outputs &amp; Files</h3>
+  <p class="lang-zh active-lang">运行完成后，在 <code>step0/</code> 目录下生成一组中间与分拆结果。例如以 Lovell v2.0 参考基因组为例，会产生按染色体与 scaffold 切分的多份文件（数量随装配与过滤结果而变）。</p>
+  <p class="lang-en">After completion, the <code>step0/</code> directory contains a set of intermediate and split outputs. For example, with the Lovell v2.0 reference genome, multiple files split by chromosome and scaffold are produced (the number varies with assembly and filtering results).</p>
+
+  <h4 class="lang-zh active-lang">核心文件 / Key files</h4>
+  <h4 class="lang-en">Key Files</h4>
+
+  <!-- 中文列表 -->
+  <ul class="lang-zh active-lang">
+    <li><strong>filtered_genotypes.vcf</strong> — 仅保留与下游相关的位点/基因型字段。</li>
+    <li><strong>extracted_genotypes.vcf</strong> — 在上述基础上完成 A/H/B 标准化编码（<code>A=ref/ref</code>，<code>H=ref/alt</code>，<code>B=alt/alt</code>）。</li>
+    <li><strong>Pp01.xlsx, Pp01_processed.xlsx</strong>（以及其它染色体/scaffold 对应文件）
+      <ul>
+        <li><strong>Pp01.xlsx</strong>：来自 filtered_genotypes.vcf 的拆分表，保留原始等位基因字符串。</li>
+        <li><strong>Pp01_processed.xlsx</strong>：来自 extracted_genotypes.vcf 的拆分表，表头规范化并转换为 A/H/B 矩阵（父母本方向统一）。</li>
+      </ul>
+    </li>
+  </ul>
+
+  <!-- 英文列表 -->
+  <ul class="lang-en">
+    <li><strong>filtered_genotypes.vcf</strong> — Retains only variant/genotype fields relevant to downstream steps.</li>
+    <li><strong>extracted_genotypes.vcf</strong> — Standardized A/H/B coding on top of the filtered set (<code>A=ref/ref</code>, <code>H=ref/alt</code>, <code>B=alt/alt</code>).</li>
+    <li><strong>Pp01.xlsx, Pp01_processed.xlsx</strong> (and corresponding files for other chromosomes/scaffolds)
+      <ul>
+        <li><strong>Pp01.xlsx</strong>: split table from <code>filtered_genotypes.vcf</code>, keeping the raw allele strings.</li>
+        <li><strong>Pp01_processed.xlsx</strong>: split table from <code>extracted_genotypes.vcf</code>, with normalized headers and A/H/B matrix (parental orientation unified).</li>
+      </ul>
+    </li>
+  </ul>
+
+  <p class="lang-zh active-lang muted">说明：<code>extracted_genotypes.vcf</code> 体量较大，提供按染色体写入的 Excel 版本便于检查与传递。</p>
+  <p class="lang-en muted">Note: <code>extracted_genotypes.vcf</code> is usually large; Excel splits per chromosome are provided for convenient inspection and sharing.</p>
+
+  <h3 class="lang-zh active-lang">7.6 字段对照</h3>
+  <h3 class="lang-en">7.6 Field Mapping</h3>
+  <p class="lang-zh active-lang"><strong>Pp01.xlsx</strong>（raw allele view）：#CHROM, POS, REF, ALT, Sample1, Sample2, …</p>
+  <p class="lang-en"><strong>Pp01.xlsx</strong> (raw allele view): #CHROM, POS, REF, ALT, Sample1, Sample2, …</p>
+  <p class="lang-zh active-lang"><strong>Pp01_processed.xlsx</strong>（normalized A/H/B view）：Chr, POS, POS-2, ref, alt, Female, Male, A, f(A), H, f(H), …, Individual1…</p>
+  <p class="lang-en"><strong>Pp01_processed.xlsx</strong> (normalized A/H/B view): Chr, POS, POS-2, ref, alt, Female, Male, A, f(A), H, f(H), …, Individual1…</p>
+
+  <h3 class="lang-zh active-lang">7.7 图注</h3>
+  <h3 class="lang-en">7.7 Figures</h3>
+
+  <div class="fig-grid" style="display:grid;grid-template-columns:1fr;gap:12px;">
+
+    <figure style="text-align:center;">
+      <img src="https://raw.githubusercontent.com/fanjiaqi777/PreMap-V1.0-release/main/images/7-1.png"
+           alt="Step0 输出目录示例" loading="lazy">
+      <figcaption class="lang-zh active-lang" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+        <em>图 7-1</em> Step0 输出目录示例
+      </figcaption>
+      <figcaption class="lang-en" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+        <em>Fig. 7-1</em> Example Step0 output directory
+      </figcaption>
+    </figure>
+
+    <figure style="text-align:center;">
+      <img src="https://raw.githubusercontent.com/fanjiaqi777/PreMap-V1.0-release/main/images/7-2.png"
+           alt="Pp01.xlsx 片段" loading="lazy">
+      <figcaption class="lang-zh active-lang" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+        <em>图 7-2</em> Pp01.xlsx 片段
+      </figcaption>
+      <figcaption class="lang-en" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+        <em>Fig. 7-2</em> Pp01.xlsx snippet
+      </figcaption>
+    </figure>
+
+    <figure style="text-align:center;">
+      <img src="https://raw.githubusercontent.com/fanjiaqi777/PreMap-V1.0-release/main/images/7-3.png"
+           alt="Pp01_processed.xlsx 片段" loading="lazy">
+      <figcaption class="lang-zh active-lang" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+        <em>图 7-3</em> Pp01_processed.xlsx 片段
+      </figcaption>
+      <figcaption class="lang-en" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+        <em>Fig. 7-3</em> Pp01_processed.xlsx snippet
+      </figcaption>
+    </figure>
+
+  </div>
+</section>
+
+
+  <!-- 7.8 -->
+<section id="step0_indel">
+  <h2 class="lang-zh active-lang">7.8 Step0 — 任意类型标记的准备（以 INDEL 为例）</h2>
+  <h2 class="lang-en">7.8 Step0 — Preparing Any Marker Type (INDEL Example)</h2>
+
+  <h3 class="lang-zh active-lang">7.9 模块说明</h3>
+  <h3 class="lang-en">7.9 Module Description</h3>
+  <p class="lang-zh active-lang">适用于在 VCF 中以二等位表示的任意变异（SNP/INDEL/MNP/符号等位 &lt;DEL&gt;/&lt;INS&gt; 等）。流程与 Step0-SNP 一致。</p>
+  <p class="lang-en">Applies to any variant represented as biallelic in VCF (SNP/INDEL/MNP/symbolic alleles such as &lt;DEL&gt;/&lt;INS&gt;). The workflow is the same as Step0-SNP.</p>
+
+  <h3 class="lang-zh active-lang">7.10 推荐预处理</h3>
+  <h3 class="lang-en">7.10 Recommended Preprocessing</h3>
+
+  <!-- 中文步骤 -->
+  <ol class="lang-zh active-lang">
+    <li><strong>规范化：</strong>左对齐并使用最短表示，拆分多等位<br>
+      <pre><code>bcftools norm -f reference.fa -m -both input.vcf -o norm.vcf</code></pre>
+    </li>
+    <li><strong>仅保留二等位：</strong>
+      <pre><code>bcftools view -m2 -M2 norm.vcf -o temp_biallelic.vcf</code></pre>
+    </li>
+    <li><strong>按 MAF 过滤（可选）：</strong>
+      <pre><code>vcftools --vcf temp_biallelic.vcf --maf 0.05 --recode --out final_filtered_output_indel</code></pre>
+    </li>
+    <li><strong>样本顺序（必须）：</strong>母本第 1，父本第 2，其余为子代。</li>
+  </ol>
+
+  <!-- 英文步骤 -->
+  <ol class="lang-en">
+    <li><strong>Normalization:</strong> left-align, use minimal representation, and split multiallelic records<br>
+      <pre><code>bcftools norm -f reference.fa -m -both input.vcf -o norm.vcf</code></pre>
+    </li>
+    <li><strong>Keep only biallelic sites:</strong>
+      <pre><code>bcftools view -m2 -M2 norm.vcf -o temp_biallelic.vcf</code></pre>
+    </li>
+    <li><strong>MAF filtering (optional):</strong>
+      <pre><code>vcftools --vcf temp_biallelic.vcf --maf 0.05 --recode --out final_filtered_output_indel</code></pre>
+    </li>
+    <li><strong>Sample order (required):</strong> mother first, father second, others are progeny.</li>
+  </ol>
+
+  <h3 class="lang-zh active-lang">7.11 运行命令（Linux）</h3>
+  <h3 class="lang-en">7.11 Command (Linux)</h3>
+  <pre><code>./dist/run_step0_Indel -i final_filtered_output_indel.vcf</code></pre>
+
+  <h3 class="lang-zh active-lang">7.12 参数说明</h3>
+  <h3 class="lang-en">7.12 Parameters</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>参数 Parameter</th>
+        <th>说明 Description</th>
+        <th>是否必需 Required</th>
+        <th>默认值 Default</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>-i, --input</td><td>输入 vcf 路径 / Input file path (vcf)</td><td>是</td><td>无</td></tr>
+      <tr><td>-o, --output</td><td>输出文件路径 / Output file path</td><td>否</td><td>自动生成到 <code>step0</code> 目录</td></tr>
+      <tr><td>-x（例 -x Pp01）</td><td>指定提取的染色体 / Specific chromosome</td><td>否</td><td>Whole genome</td></tr>
+      <tr><td>-h, --help</td><td>查看帮助 / Show help</td><td>否</td><td>无</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="lang-zh active-lang">7.13 输出</h3>
+  <h3 class="lang-en">7.13 Outputs</h3>
+  <p class="lang-zh active-lang">与 Step0-SNP 输出一致（filtered_genotypes.vcf、extracted_genotypes.vcf、Pp01.xlsx、Pp01_processed.xlsx…）。差异在于 <code>REF/ALT</code> 可为多碱基字符串；样本基因型仍按 A/H/B 编码。</p>
+  <p class="lang-en">Outputs are identical to Step0-SNP (filtered_genotypes.vcf, extracted_genotypes.vcf, Pp01.xlsx, Pp01_processed.xlsx…). The difference is that <code>REF/ALT</code> may be multi-base strings; sample genotypes are still coded as A/H/B.</p>
+
+  <ul class="lang-zh active-lang">
+    <li><strong>Pp01.xlsx</strong>：保留原始等位基因字符串。</li>
+    <li><strong>Pp01_processed.xlsx</strong>：规范化表头与 A/H/B 矩阵。</li>
+  </ul>
+  <ul class="lang-en">
+    <li><strong>Pp01.xlsx</strong>: retains raw allele strings.</li>
+    <li><strong>Pp01_processed.xlsx</strong>: normalized headers and A/H/B matrix.</li>
+  </ul>
+
+  <p class="lang-zh active-lang muted">符号等位（如 &lt;DEL&gt;/&lt;INS&gt;）在 Excel 视图同样记录于 REF/ALT，不影响后续步骤。</p>
+  <p class="lang-en muted">Symbolic alleles (e.g., &lt;DEL&gt;/&lt;INS&gt;) are recorded in REF/ALT in the Excel views and do not affect subsequent steps.</p>
+
+  <h3 class="lang-zh active-lang">7.14 图注</h3>
+  <h3 class="lang-en">7.14 Figures</h3>
+
+  <figure style="text-align:center;">
+    <img src="https://raw.githubusercontent.com/fanjiaqi777/PreMap-V1.0-release/main/images/7-4.png"
+         alt="INDEL：Pp01.xlsx 片段" loading="lazy">
+    <figcaption class="lang-zh active-lang" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>图 7-4</em> INDEL：Pp01.xlsx 片段
+    </figcaption>
+    <figcaption class="lang-en" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>Fig. 7-4</em> INDEL: Pp01.xlsx snippet
+    </figcaption>
+  </figure>
+
+  <figure style="text-align:center;">
+    <img src="https://raw.githubusercontent.com/fanjiaqi777/PreMap-V1.0-release/main/images/7-5.png"
+         alt="INDEL：Pp01_processed.xlsx 片段" loading="lazy">
+    <figcaption class="lang-zh active-lang" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>图 7-5</em> INDEL：Pp01_processed.xlsx 片段
+    </figcaption>
+    <figcaption class="lang-en" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>Fig. 7-5</em> INDEL: Pp01_processed.xlsx snippet
+    </figcaption>
+  </figure>
+
+  <h3 class="lang-zh active-lang">7.15 常见问题</h3>
+  <h3 class="lang-en">7.15 FAQ</h3>
+  <ul class="lang-zh active-lang">
+    <li>多等位未拆分：确保执行 <code>-m -both</code> 并在下一步仅保留二等位。</li>
+    <li>父母本顺序错误：会导致 A/H/B 方向不一致；需在 Step0 重新排列样本并重跑。</li>
+  </ul>
+  <ul class="lang-en">
+    <li>Multiallelic sites not split: ensure <code>-m -both</code> was used and keep only biallelic sites in the next step.</li>
+    <li>Parental order incorrect: this causes inconsistent A/H/B orientation; reorder samples in Step0 and rerun.</li>
+  </ul>
+</section>
+
+  <!-- 8 -->
+<section id="step0_5">
+  <h2 class="lang-zh active-lang">8. Step0_5 — 为分离位点添加统计指标（Linux and Windows）</h2>
+  <h2 class="lang-en">8. Step0_5 — Add Statistics to Segregating Loci (Linux and Windows)</h2>
+
+  <h3 class="lang-zh active-lang">8.1 模块说明</h3>
+  <h3 class="lang-en">8.1 Module Description</h3>
+  <p class="lang-zh active-lang">基于 <code>{input}_processed.xlsx</code>，逐位点统计后代 A/H/B/缺失 数量并计算频率，生成 <code>{input}_processed_for_step1.xlsx</code> 供 Step1 使用。</p>
+  <p class="lang-en">Based on <code>{input}_processed.xlsx</code>, this step counts A/H/B/missing for each locus across progeny, computes frequencies, and generates <code>{input}_processed_for_step1.xlsx</code> for Step1.</p>
+
+  <h3 class="lang-zh active-lang">8.2 命令（Linux）</h3>
+  <h3 class="lang-en">8.2 Command (Linux)</h3>
+  <pre><code>./dist/run_step0_5 -i Input_processed.xlsx</code></pre>
+
+  <h3 class="lang-zh active-lang">8.3 参数</h3>
+  <h3 class="lang-en">8.3 Parameters</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>参数 Parameter</th>
+        <th>说明 Description</th>
+        <th>是否必需 Required</th>
+        <th>默认值 Default</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>-i, --input</td>
+        <td>输入 Excel（*_processed.xlsx） / Input Excel path</td>
+        <td>是 Yes</td>
+        <td>—（使用 Step0 结果作为输入）</td>
+      </tr>
+      <tr>
+        <td>-o, --output</td>
+        <td>输出文件路径 / Output file path</td>
+        <td>否 No</td>
+        <td>{input}_processed_for_step1.xlsx（与输入同路径）</td>
+      </tr>
+      <tr>
+        <td>-h, --help</td>
+        <td>查看帮助信息 / Show help</td>
+        <td>否 No</td>
+        <td>无</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 class="lang-zh active-lang">8.4 输出字段</h3>
+  <h3 class="lang-en">8.4 Output Fields</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>列名 / Column</th>
+        <th>含义 / Meaning</th>
+        <th>计算 / Formula</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>A_Count</td><td>后代基因型为 A 的数量</td><td>count of A</td></tr>
+      <tr><td>H_Count</td><td>后代基因型为 H 的数量</td><td>count of H</td></tr>
+      <tr><td>B_Count</td><td>后代基因型为 B 的数量</td><td>count of B</td></tr>
+      <tr><td>-_Count</td><td>缺失/无定型数量</td><td>count of -</td></tr>
+      <tr><td>Called_N</td><td>有效基因型数</td><td>A_Count + H_Count + B_Count</td></tr>
+      <tr><td>f(A)</td><td>A 等位基因频率</td><td>(2×A_Count + 1×H_Count) / (2×Called_N)</td></tr>
+      <tr><td>f(B)</td><td>B 等位基因频率</td><td>(2×B_Count + 1×H_Count) / (2×Called_N)</td></tr>
+      <tr><td>f(H)</td><td>H 基因型频率</td><td>H_Count / Called_N</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="lang-zh active-lang">8.5 图示 / Figures</h3>
+  <h3 class="lang-en">8.5 Figures</h3>
+
+  <figure style="text-align:center;">
+    <img src="https://raw.githubusercontent.com/fanjiaqi777/PreMap-V1.0-release/main/images/8-1.png"
+         alt="Step0_5 GUI：选择 *_processed.xlsx →（可选）设定输出 → Start；完成后生成 *_processed_for_step1.xlsx" loading="lazy">
+    <figcaption class="lang-zh active-lang" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>图 8-1</em> Step0_5 GUI：选择 *_processed.xlsx →（可选）设定输出 → Start；完成后生成 *_processed_for_step1.xlsx。
+    </figcaption>
+    <figcaption class="lang-en" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>Fig. 8-1</em> Step0_5 GUI: select *_processed.xlsx → (optional) set output → Start; generates *_processed_for_step1.xlsx.
+    </figcaption>
+  </figure>
+
+  <figure style="text-align:center;">
+    <img src="https://raw.githubusercontent.com/fanjiaqi777/PreMap-V1.0-release/main/images/8-2.png"
+         alt="输出矩阵示例：右侧新增 A_Count/H_Count/B_Count/-_Count/f(A)/f(H) 等列" loading="lazy">
+    <figcaption class="lang-zh active-lang" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>图 8-2</em> 输出矩阵示例：右侧新增 A_Count/H_Count/B_Count/-_Count/f(A)/f(H) 等列。
+    </figcaption>
+    <figcaption class="lang-en" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>Fig. 8-2</em> Example output matrix: new columns A_Count/H_Count/B_Count/-_Count/f(A)/f(H) on the right.
+    </figcaption>
+  </figure>
+</section>
+
+
+  <!-- 9 -->
+<section id="step1">
+  <h2 class="lang-zh active-lang">9. Step1 — 清洗与过滤（Clean and Filter）</h2>
+  <h2 class="lang-en">9. Step1 — Cleaning and Filtering</h2>
+
+  <h3 class="lang-zh active-lang">9.1 前置要求 / Prerequisites</h3>
+  <h3 class="lang-en">9.1 Prerequisites</h3>
+  <ul class="lang-zh active-lang">
+    <li><strong>前 5 列（区分大小写）</strong>：Number, CHR, POS-2, Female, Male；自 F 列起为 Individual1, Individual2, …</li>
+    <li><strong>统计列（末端 6 列）</strong>：A_Count, H_Count, B_Count, -_Count, f(A), f(H)（由 Step0_5 生成）。</li>
+    <li><strong>工作表名</strong>：用于本步骤的工作表命名为 <code>step1</code>。</li>
+  </ul>
+  <ul class="lang-en">
+    <li><strong>First 5 columns (case-sensitive)</strong>: Number, CHR, POS-2, Female, Male; from column F onwards: Individual1, Individual2, …</li>
+    <li><strong>Statistics columns (last 6 columns)</strong>: A_Count, H_Count, B_Count, -_Count, f(A), f(H) (generated by Step0_5).</li>
+    <li><strong>Worksheet name</strong>: the worksheet used in this step must be named <code>step1</code>.</li>
+  </ul>
+  <p class="lang-zh active-lang">若统计列缺失，请先运行 Step0_5 生成 *_processed_for_step1.xlsx。</p>
+  <p class="lang-en">If the statistics columns are missing, run Step0_5 first to generate *_processed_for_step1.xlsx.</p>
+
+  <h3 class="lang-zh active-lang">9.2 命令 / Command</h3>
+  <h3 class="lang-en">9.2 Command</h3>
+  <h4 class="lang-zh active-lang">Linux</h4>
+  <h4 class="lang-en">Linux</h4>
+  <pre><code>./dist/run_step1 -i Input.xlsx</code></pre>
+
+  <h3 class="lang-zh active-lang">9.3 参数</h3>
+  <h3 class="lang-en">9.3 Parameters</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>参数 Parameter</th>
+        <th>说明 Description</th>
+        <th>必需 Req.</th>
+        <th>默认 Default</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>-i, --input</td>
+        <td>输入 Excel（包含 step1 工作表） / Input Excel (contains sheet 'step1')</td>
+        <td>是 / Yes</td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td>-d, --dash-threshold</td>
+        <td>按位点缺失阈值：d = -_Count / total_individuals；缺失 &gt; d 即剔除 / Per-locus missing-rate threshold: d = -_Count / total_individuals; remove markers with missing &gt; d</td>
+        <td>否 / No</td>
+        <td>0.20</td>
+      </tr>
+      <tr>
+        <td>-e, --error-rate</td>
+        <td>允许的轻度纠错上限；超过则不纠错而直接淘汰 / Upper limit for mild auto-correction; if exceeded, no correction is applied and the marker is discarded</td>
+        <td>否 / No</td>
+        <td>0.03</td>
+      </tr>
+      <tr>
+        <td>-t, --threshold</td>
+        <td>纯合频率最小值；若 A 或 B 任一纯合型比例 &lt; 该值则过滤；设 0 关闭 / Minimum homozygote fraction; filter if A or B homozygote proportion &lt; this value; set 0 to disable</td>
+        <td>否 / No</td>
+        <td>0.055</td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="muted lang-zh active-lang">建议先用默认值跑通，再按需求微调。</p>
+  <p class="muted lang-en">Run with the default settings first, then fine-tune as needed.</p>
+
+  <h3 class="lang-zh active-lang">9.4 交互式过滤选项（GUI）</h3>
+  <h3 class="lang-en">9.4 Interactive Filtering Options (GUI)</h3>
+  <ul class="lang-zh active-lang">
+    <li>去除单态：f(A)=0 且 f(H)=0（全 B）；或 f(A)=1 且 f(H)=0（全 A）</li>
+    <li>范围过滤：f(A) &gt; 0.9、f(A) &lt; 0.1、f(H) &lt; 0.15（默认 0.9 / 0.1 / 0.15）</li>
+  </ul>
+  <ul class="lang-en">
+    <li>Remove monomorphic loci: f(A)=0 and f(H)=0 (all B); or f(A)=1 and f(H)=0 (all A).</li>
+    <li>Range filters: f(A) &gt; 0.9, f(A) &lt; 0.1, f(H) &lt; 0.15 (defaults 0.9 / 0.1 / 0.15).</li>
+  </ul>
+  <p class="muted lang-zh active-lang">提示：“Markers that meet these option criteria will be removed.” → 勾选即为剔除。</p>
+  <p class="muted lang-en">Tip: “Markers that meet these option criteria will be removed.” → checking an option removes the matching markers.</p>
+
+  <h3 class="lang-zh active-lang">9.5 输出 / Outputs</h3>
+  <h3 class="lang-en">9.5 Outputs</h3>
+  <p class="lang-zh active-lang">程序会在输入文件内追加结果工作表：</p>
+  <p class="lang-en">The program appends the following worksheets to the input file:</p>
+  <ul class="lang-zh active-lang">
+    <li>Segregating loci</li>
+    <li>1 to 1</li>
+    <li>1 to 2 to 1</li>
+    <li>Parent1</li>
+    <li>Parent2</li>
+  </ul>
+  <ul class="lang-en">
+    <li>Segregating loci</li>
+    <li>1 to 1</li>
+    <li>1 to 2 to 1</li>
+    <li>Parent1</li>
+    <li>Parent2</li>
+  </ul>
+  <p class="muted lang-zh active-lang">分类依据为 Female/Male 基因型与后代分离型式匹配关系。</p>
+  <p class="muted lang-en">Classification is based on consistency between parental genotypes (Female/Male) and the progeny segregation pattern.</p>
+
+  <figure style="text-align:center;">
+    <img src="https://raw.githubusercontent.com/fanjiaqi777/PreMap-V1.0-release/main/images/9-1.png"
+         alt="前 5 列与样本列 / First 5 columns and sample columns" loading="lazy">
+    <figcaption class="lang-zh active-lang" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>图 9-1</em> 前 5 列与样本列
+    </figcaption>
+    <figcaption class="lang-en" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>Fig. 9-1</em> First 5 columns and sample columns
+    </figcaption>
+  </figure>
+
+  <figure style="text-align:center;">
+    <img src="https://raw.githubusercontent.com/fanjiaqi777/PreMap-V1.0-release/main/images/9-2.png"
+         alt="统计列示例 / Example of statistic columns" loading="lazy">
+    <figcaption class="lang-zh active-lang" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>图 9-2</em> 统计列示例
+    </figcaption>
+    <figcaption class="lang-en" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>Fig. 9-2</em> Example of statistic columns
+    </figcaption>
+  </figure>
+
+  <figure style="text-align:center;">
+    <img src="https://raw.githubusercontent.com/fanjiaqi777/PreMap-V1.0-release/main/images/9-3.png"
+         alt="工作表命名为 step1 / Worksheet named 'step1'" loading="lazy">
+    <figcaption class="lang-zh active-lang" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>图 9-3</em> 工作表命名为 step1
+    </figcaption>
+    <figcaption class="lang-en" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>Fig. 9-3</em> Worksheet named “step1”
+    </figcaption>
+  </figure>
+
+  <figure style="text-align:center;">
+    <img src="https://raw.githubusercontent.com/fanjiaqi777/PreMap-V1.0-release/main/images/9-4.png"
+         alt="GUI 过滤 / GUI filtering" loading="lazy">
+    <figcaption class="lang-zh active-lang" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>图 9-4</em> GUI 过滤
+    </figcaption>
+    <figcaption class="lang-en" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>Fig. 9-4</em> GUI filtering
+    </figcaption>
+  </figure>
+
+  <figure style="text-align:center;">
+    <img src="https://raw.githubusercontent.com/fanjiaqi777/PreMap-V1.0-release/main/images/9-5.png"
+         alt="输出工作表 / Output worksheets" loading="lazy">
+    <figcaption class="lang-zh active-lang" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>图 9-5</em> 输出工作表
+    </figcaption>
+    <figcaption class="lang-en" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>Fig. 9-5</em> Output worksheets
+    </figcaption>
+  </figure>
+</section>
+
+
+  <!-- 10 -->
+<section id="step2">
+  <h2 class="lang-zh active-lang">10. Step2 — 相位调整与聚类清洗（Phasing）</h2>
+  <h2 class="lang-en">10. Step2 — Phasing and Cluster Cleaning</h2>
+
+  <h3 class="lang-zh active-lang">10.1 入口与输入</h3>
+  <h3 class="lang-en">10.1 Entry & Inputs</h3>
+  <p class="lang-zh active-lang">Step1 中与本步骤相关的工作表：Segregating loci（仅查看）、Parent1、Parent2。请将 Parent1/Parent2 另存为独立 Excel 文件作为本步输入。</p>
+  <p class="lang-en">From Step1, the relevant sheets are: Segregating loci (view only), Parent1, and Parent2. Save Parent1/Parent2 as separate Excel files and use them as inputs for this step.</p>
+
+  <h3 class="lang-zh active-lang">10.2 命令</h3>
+  <h3 class="lang-en">10.2 Commands</h3>
+  <h4 class="lang-zh active-lang">Linux</h4>
+  <h4 class="lang-en">Linux</h4>
+  <pre><code>./dist/run_step2 -i Input.xlsx -s 0.90 -l 0.03 -m 0.20</code></pre>
+
+  <h4 class="lang-zh active-lang">Windows（GUI）</h4>
+  <h4 class="lang-en">Windows (GUI)</h4>
+  <ol class="lang-zh active-lang">
+    <li>Browse 选择 <code>Parent1.xlsx</code> 或 <code>Parent2.xlsx</code></li>
+    <li>（可选）Save as 指定输出文件名</li>
+    <li>Start! 运行</li>
+  </ol>
+  <ol class="lang-en">
+    <li>Click <em>Browse</em> and select <code>Parent1.xlsx</code> or <code>Parent2.xlsx</code>.</li>
+    <li>(Optional) Use <em>Save as</em> to set the output file name.</li>
+    <li>Click <em>Start!</em> to run.</li>
+  </ol>
+  <p class="muted lang-zh active-lang">上例 l=0.03、m=0.20 为示例；默认值见下表。</p>
+  <p class="muted lang-en">The l=0.03 and m=0.20 in the example are illustrative; see defaults below.</p>
+
+  <h3 class="lang-zh active-lang">10.3 参数</h3>
+  <h3 class="lang-en">10.3 Parameters</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>参数</th><th>说明</th><th>必需</th><th>默认</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>-i, --input</td><td>来自 Step1 的 Parent1 或 Parent2 / Input from Step1: Parent1 or Parent2</td><td>是 / Yes</td><td>—</td></tr>
+      <tr><td>-o, --output</td><td>输出文件路径 / Output file path</td><td>否 / No</td><td>{input_name}_phased.xlsx</td></tr>
+      <tr><td>-s, --similarity_threshold</td><td>相似性阈值（越大合并越“严格”） / Similarity threshold (higher = stricter merging)</td><td>否 / No</td><td>0.90</td></tr>
+      <tr><td>-l, --low_threshold</td><td>低频阈值，删除极小噪声簇 / Low-frequency cutoff; delete tiny noise clusters</td><td>否 / No</td><td>0.05</td></tr>
+      <tr><td>-m, --mid_threshold</td><td>中频“灰区”阈值；标记待判 / Mid-frequency “gray zone” cutoff; mark for review</td><td>否 / No</td><td>0.15</td></tr>
+      <tr><td>-h, --help</td><td>查看帮助 / Show help</td><td>否 / No</td><td>—</td></tr>
+    </tbody>
+  </table>
+
+  <h4 class="lang-zh active-lang">使用建议 / Practical guidance</h4>
+  <h4 class="lang-en">Practical Guidance</h4>
+
+  <h5 class="lang-zh active-lang">s（similarity_threshold）</h5>
+  <h5 class="lang-en">s (similarity_threshold)</h5>
+  <pre><code>S_max ≈ 1 - (r + e) / N</code></pre>
+  <p class="lang-zh active-lang">N：子代数；r：真实重组引起的不一致（常 1–2）；e：测序/识别误差（~1% @15×）。如 N=150, r=2, e=2 → S_max≈0.9733。建议数据较好时 s≥0.90；不建议低于 0.80。</p>
+  <p class="lang-en">N: number of progeny; r: true recombination-induced disagreements (often 1–2); e: sequencing/calling error (~1% @15×). Example: N=150, r=2, e=2 → S_max≈0.9733. For good data, s≥0.90 is recommended; not advised to go below 0.80.</p>
+
+  <h5 class="lang-zh active-lang">l 与 m</h5>
+  <h5 class="lang-en">l and m</h5>
+  <ul class="lang-zh active-lang">
+    <li>起步可用 l=0.01–0.02，m=0.10；</li>
+    <li>高 s 时易产生小碎簇：降低 l 可避免误删；设中等 m 标成灰区以便复核。</li>
+  </ul>
+  <ul class="lang-en">
+    <li>Start with l=0.01–0.02, m=0.10;</li>
+    <li>High s tends to produce tiny clusters: lower l to avoid over-deletion; use a moderate m to flag gray-zone clusters for review.</li>
+  </ul>
+
+  <h5 class="lang-zh active-lang">复核与微调</h5>
+  <h5 class="lang-en">Review & Fine-tuning</h5>
+  <ul class="lang-zh active-lang">
+    <li>在 <code>Reoriented_Clusters</code> 看趋势：若灰区小簇与前后主簇一致，可调低 s 或提高 m 并在 <code>Marked_Results</code> 改判为保留。</li>
+    <li>碎簇过多：升高 l 或略降 s；过度合并：升高 s、下调 m。</li>
+  </ul>
+  <ul class="lang-en">
+    <li>Check trends in <code>Reoriented_Clusters</code>: if a gray-zone micro-cluster matches adjacent main clusters, lower s or raise m and re-mark to keep it in <code>Marked_Results</code>.</li>
+    <li>Too many micro-clusters: increase l or slightly decrease s; over-merging: increase s and lower m.</li>
+  </ul>
+
+  <h3 class="lang-zh active-lang">10.4 输出</h3>
+  <h3 class="lang-en">10.4 Outputs</h3>
+  <p class="lang-zh active-lang">生成 <code>{input_name}_phased.xlsx</code>，包含 5 张表：</p>
+  <p class="lang-en">Generates <code>{input_name}_phased.xlsx</code> with the following 5 sheets:</p>
+  <ul class="lang-zh active-lang">
+    <li>Clustered_Results — 添加 Cluster 编号；不删行</li>
+    <li>Linear_Optimized — 簇内相位统一，结构更线性</li>
+    <li>Reoriented_Clusters — 全局方向一致；不删行</li>
+    <li>Marked_Results — 删 &lt;low_threshold 小簇；(low, mid) 标灰区；新增 MarkedForDeletion、Similarity_a/b/c、Prev/Next_line_idx</li>
+    <li>Cleaned_Results — 最终清理矩阵（推荐给 Step3）</li>
+  </ul>
+  <ul class="lang-en">
+    <li>Clustered_Results — cluster IDs added; no row deletion.</li>
+    <li>Linear_Optimized — phase unified within clusters; more linear structure.</li>
+    <li>Reoriented_Clusters — globally consistent orientation; no row deletion.</li>
+    <li>Marked_Results — remove clusters &lt; low_threshold; mark (low, mid) as gray zone; adds MarkedForDeletion, Similarity_a/b/c, Prev/Next_line_idx.</li>
+    <li>Cleaned_Results — final cleaned matrix (recommended for Step3).</li>
+  </ul>
+
+  <h3 class="lang-zh active-lang">10.5 使用建议</h3>
+  <h3 class="lang-en">10.5 Tips</h3>
+  <ul class="lang-zh active-lang">
+    <li>Parent1/Parent2 分开跑；Step4 合流</li>
+    <li>先用默认；问题导向地轻调 s/l/m</li>
+    <li>优先用 Similarity_* 与 Prev/Next_line_idx 复核灰区片段</li>
+  </ul>
+  <ul class="lang-en">
+    <li>Run Parent1/Parent2 separately; they converge in Step4.</li>
+    <li>Start with defaults; adjust s/l/m slightly, driven by issues observed.</li>
+    <li>Prioritize Similarity_* and Prev/Next_line_idx for reviewing gray-zone segments.</li>
+  </ul>
+
+  <figure style="text-align:center;">
+    <img src="https://raw.githubusercontent.com/fanjiaqi777/PreMap-V1.0-release/main/images/10-1.png"
+         alt="可继续分析的表 / Sheets usable for downstream analysis" loading="lazy">
+    <figcaption class="lang-zh active-lang" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>图 10-1</em> 可继续分析的表
+    </figcaption>
+    <figcaption class="lang-en" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>Fig. 10-1</em> Sheets usable for downstream analysis
+    </figcaption>
+  </figure>
+
+  <figure style="text-align:center;">
+    <img src="https://raw.githubusercontent.com/fanjiaqi777/PreMap-V1.0-release/main/images/10-2.jpg"
+         alt="另存 Parent1/Parent2 / Save Parent1/Parent2 separately" loading="lazy">
+    <figcaption class="lang-zh active-lang" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>图 10-2</em> 另存 Parent1/Parent2
+    </figcaption>
+    <figcaption class="lang-en" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>Fig. 10-2</em> Save Parent1/Parent2 as separate files
+    </figcaption>
+  </figure>
+
+  <figure style="text-align:center;">
+    <img src="https://raw.githubusercontent.com/fanjiaqi777/PreMap-V1.0-release/main/images/10-3.png"
+         alt="Step2 GUI" loading="lazy">
+    <figcaption class="lang-zh active-lang" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>图 10-3</em> GUI
+    </figcaption>
+    <figcaption class="lang-en" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>Fig. 10-3</em> GUI
+    </figcaption>
+  </figure>
+
+  <figure style="text-align:center;">
+    <img src="https://raw.githubusercontent.com/fanjiaqi777/PreMap-V1.0-release/main/images/10-4.png"
+         alt="五张输出表 / Five output sheets" loading="lazy">
+    <figcaption class="lang-zh active-lang" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>图 10-4</em> 五张输出表
+    </figcaption>
+    <figcaption class="lang-en" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>Fig. 10-4</em> Five output sheets
+    </figcaption>
+  </figure>
+
+  <figure style="text-align:center;">
+    <img src="https://raw.githubusercontent.com/fanjiaqi777/PreMap-V1.0-release/main/images/10-5.png"
+         alt="灰区判定列 / Gray-zone annotation columns" loading="lazy">
+    <figcaption class="lang-zh active-lang" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>图 10-5</em> 灰区判定列
+    </figcaption>
+    <figcaption class="lang-en" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>Fig. 10-5</em> Gray-zone annotation columns
+    </figcaption>
+  </figure>
+</section>
+
+
+  <!-- 11 -->
+<section id="step3">
+  <h2 class="lang-zh active-lang">11. Step3 — Binning（断点识别）</h2>
+  <h2 class="lang-en">11. Step3 — Binning (Breakpoint Identification)</h2>
+
+  <h3 class="lang-zh active-lang">11.1 目的 / Purpose</h3>
+  <h3 class="lang-en">11.1 Purpose</h3>
+  <p class="lang-zh active-lang">自动识别每个个体在染色体上的重组断点，并据此将标记序列划分为 bins。</p>
+  <p class="lang-en">Automatically identify recombination breakpoints along each individual’s chromosomes and partition the marker sequence into bins accordingly.</p>
+
+  <h3 class="lang-zh active-lang">11.2 命令（Linux）</h3>
+  <h3 class="lang-en">11.2 Command (Linux)</h3>
+  <pre><code>./dist/run_step3 -i Input.xlsx -o 1</code></pre>
+
+  <h4 class="lang-zh active-lang">Windows（GUI）</h4>
+  <h4 class="lang-en">Windows (GUI)</h4>
+  <ol class="lang-zh active-lang">
+    <li>点击 <em>Browse</em> 选择输入文件；</li>
+    <li>在 <em>Processing Option</em> 里选择 <strong>1:1 Segregating Loci</strong> 或 <strong>1:2:1 Segregating Loci</strong>；</li>
+    <li>（可选）点击下方 <em>Browse</em> 指定输出文件名/路径；</li>
+    <li>点击 <em>Start Processing</em> 开始。</li>
+  </ol>
+  <ol class="lang-en">
+    <li>Click <em>Browse</em> to select the input file.</li>
+    <li>In <em>Processing Option</em>, choose <strong>1:1 Segregating Loci</strong> or <strong>1:2:1 Segregating Loci</strong>.</li>
+    <li>(Optional) Click the lower <em>Browse</em> to set output file name/path.</li>
+    <li>Click <em>Start Processing</em> to run.</li>
+  </ol>
+  <p class="lang-zh active-lang"><em>说明</em>：CLI 中 <code>-o</code> 是“功能选项”而非输出路径；GUI 可单独指定输出文件名。</p>
+  <p class="lang-en"><em>Note</em>: In the CLI, <code>-o</code> selects the processing mode (not the output path); in the GUI you can set the output file name separately.</p>
+
+  <h3 class="lang-zh active-lang">11.3 参数</h3>
+  <h3 class="lang-en">11.3 Parameters</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>参数 Parameter</th>
+        <th>说明 Description</th>
+        <th>必需 Req.</th>
+        <th>默认 Default</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>-i, --input</td>
+        <td>输入 Excel（来自上一步的结果） / Input Excel (produced by the previous step)</td>
+        <td>是 / Yes</td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td>-o, --option</td>
+        <td>功能选项：<code>1</code> = 1:1 分离；<code>2</code> = 1:2:1 分离 / Processing mode: <code>1</code>=1:1, <code>2</code>=1:2:1</td>
+        <td>是 / Yes</td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td>-h, --help</td>
+        <td>查看帮助 / Show help</td>
+        <td>否 / No</td>
+        <td>—</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h4 class="lang-zh active-lang">输入对应关系</h4>
+  <h4 class="lang-en">Input Mapping</h4>
+  <ul class="lang-zh active-lang">
+    <li><code>-o 1</code>（1:1）：输入为 Step2 的输出（推荐使用 <code>Cleaned_Results</code> 或你确认过的单一矩阵）。</li>
+    <li><code>-o 2</code>（1:2:1）：输入为 Step1 的工作表 <code>1 to 2 to 1</code>。</li>
+  </ul>
+  <ul class="lang-en">
+    <li><code>-o 1</code> (1:1): input is the Step2 output (recommended: <code>Cleaned_Results</code> or your curated single matrix).</li>
+    <li><code>-o 2</code> (1:2:1): input is the Step1 sheet <code>1 to 2 to 1</code>.</li>
+  </ul>
+
+  <h4 class="lang-zh active-lang">输出位置</h4>
+  <h4 class="lang-en">Output Location</h4>
+  <p class="lang-zh active-lang">CLI：默认与输入同目录自动命名；GUI：可自定义输出路径与文件名。</p>
+  <p class="lang-en">CLI: auto-named in the same directory as the input; GUI: output path and file name can be customized.</p>
+
+  <h3 class="lang-zh active-lang">11.4 结果</h3>
+  <h3 class="lang-en">11.4 Results</h3>
+  <ol class="lang-zh active-lang">
+    <li><strong>bins</strong>（最终结果）
+      <ul>
+        <li>每个样本的每一个有效重组断点会在矩阵中以下划线标注（图 11-2 红框示例）。</li>
+        <li>同一 bin 内标记在该样本上保持一致趋势/相位。</li>
+      </ul>
+    </li>
+    <li><strong>bins-record</strong>（断点记录 / breakpoint log）
+      <ul>
+        <li>逐条记录识别到的断点信息，便于追溯与复核（图 11-3）。</li>
+        <li>常见字段（以你的实际输出为准）：<code>Type</code>（事件类型，如 Trend Change）、<code>New_Trend</code>（断点后趋势，如 A/H/B）、<code>Start_POS-2</code>、<code>End_POS-2</code>（物理区间）、<code>Start_Number</code>、<code>End_Number</code>（行号范围）。</li>
+      </ul>
+    </li>
+    <li><strong>bins-2</strong>（仅 <code>-o 2</code> 时出现 / intermediate for 1:2:1）
+      <ul>
+        <li><em>phase-correction</em> 的中间产物：当 A 与 B 等价时，对相位进行校正，随后产出 <code>bins</code> 最终结果（图 11-4）。</li>
+      </ul>
+    </li>
+  </ol>
+  <ol class="lang-en">
+    <li><strong>bins</strong> (final result)
+      <ul>
+        <li>Each valid recombination breakpoint per sample is marked with an underline in the matrix (see red box in Fig. 11-2).</li>
+        <li>Markers within the same bin maintain a consistent trend/phase for that sample.</li>
+      </ul>
+    </li>
+    <li><strong>bins-record</strong> (breakpoint log)
+      <ul>
+        <li>Records each detected breakpoint for audit and review (Fig. 11-3).</li>
+        <li>Typical fields (subject to your actual output): <code>Type</code> (event type, e.g., Trend Change), <code>New_Trend</code> (post-breakpoint trend, e.g., A/H/B), <code>Start_POS-2</code>, <code>End_POS-2</code> (physical interval), <code>Start_Number</code>, <code>End_Number</code> (row range).</li>
+      </ul>
+    </li>
+    <li><strong>bins-2</strong> (only when <code>-o 2</code>; intermediate for 1:2:1)
+      <ul>
+        <li>Intermediate product for <em>phase-correction</em> when A and B are equivalent; the final <code>bins</code> are produced afterwards (Fig. 11-4).</li>
+      </ul>
+    </li>
+  </ol>
+
+  <h3 class="lang-zh active-lang">11.5 使用建议 / Tips</h3>
+  <h3 class="lang-en">11.5 Tips</h3>
+  <ul class="lang-zh active-lang">
+    <li><strong>选择合适输入</strong>：<code>-o 1</code> 推荐使用 Step2 的 <code>Cleaned_Results</code> 或经确认的 <em>phased</em> 单一矩阵；<code>-o 2</code> 直接使用 Step1 的 <code>1 to 2 to 1</code>。</li>
+    <li><strong>先单染色体验证</strong>：先在单条染色体上跑通并核对断点数量与位置，再批量处理。</li>
+    <li><strong>下划线 = 断点</strong>：需要更明显可在 Excel 里给“带下划线”的行/列加条件格式高亮。</li>
+    <li><strong>人工校正</strong>：
+      <ul>
+        <li>允许专家根据经验与数据类型对 <code>bins</code> 矩阵做小幅微调（尤其首尾标记）。</li>
+        <li>若对 <code>bins</code> 做了微调，务必同步更新 <code>bins-record</code>：每新增/移动一个断点，都应新增/修改一条记录，填写 <code>Type</code> / <code>New_Trend</code> / <code>Start_POS-2</code> / <code>End_POS-2</code> / <code>Start_Number</code> / <code>End_Number</code> / <code>Trend_Group</code>。</li>
+      </ul>
+    </li>
+  </ul>
+  <ul class="lang-en">
+    <li><strong>Choose appropriate input</strong>: for <code>-o 1</code>, use Step2’s <code>Cleaned_Results</code> or a vetted single phased matrix; for <code>-o 2</code>, use Step1’s <code>1 to 2 to 1</code> sheet directly.</li>
+    <li><strong>Validate on one chromosome first</strong>: run on a single chromosome, check counts/positions of breakpoints, then scale up.</li>
+    <li><strong>Underline = breakpoint</strong>: if you want stronger emphasis, add conditional formatting to underline-marked rows/columns in Excel.</li>
+    <li><strong>Manual curation</strong>:
+      <ul>
+        <li>Domain experts may make minor adjustments to the <code>bins</code> matrix (especially first/last markers).</li>
+        <li>If you adjust <code>bins</code>, keep <code>bins-record</code> in sync: for every added/moved breakpoint, add/edit one record with <code>Type</code>, <code>New_Trend</code>, <code>Start_POS-2</code>, <code>End_POS-2</code>, <code>Start_Number</code>, <code>End_Number</code>, <code>Trend_Group</code>.</li>
+      </ul>
+    </li>
+  </ul>
+
+  <figure style="text-align:center;">
+    <img src="https://raw.githubusercontent.com/fanjiaqi777/PreMap-V1.0-release/main/images/11-1.png"
+         alt="Step3 Windows 界面：选择输入与功能选项，可选设置输出并开始处理" loading="lazy">
+    <figcaption class="lang-zh active-lang" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>图 11-1</em> Step3 的 Windows 界面：选择输入与功能选项（1:1 或 1:2:1），可选设置输出，点击 Start Processing。
+    </figcaption>
+    <figcaption class="lang-en" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>Fig. 11-1</em> Step3 on Windows: choose input and processing option (1:1 or 1:2:1), optionally set output, then click Start Processing.
+    </figcaption>
+  </figure>
+
+  <figure style="text-align:center;">
+    <img src="https://raw.githubusercontent.com/fanjiaqi777/PreMap-V1.0-release/main/images/11-2.png"
+         alt="bins 工作表片段：下划线标注识别到的重组断点" loading="lazy">
+    <figcaption class="lang-zh active-lang" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>图 11-2</em> <code>bins</code> 工作表片段：红框示例为识别到的重组断点（下划线）。
+    </figcaption>
+    <figcaption class="lang-en" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>Fig. 11-2</em> <code>bins</code> sheet excerpt: underlines mark detected recombination breakpoints (red box example).
+    </figcaption>
+  </figure>
+
+  <figure style="text-align:center;">
+    <img src="https://raw.githubusercontent.com/fanjiaqi777/PreMap-V1.0-release/main/images/11-3.png"
+         alt="bins-record 表：逐条记录断点信息（物理位置、行号范围、受影响样本）" loading="lazy">
+    <figcaption class="lang-zh active-lang" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>图 11-3</em> <code>bins-record</code>：逐条记录断点信息，含物理位置、行号范围与受影响样本。
+    </figcaption>
+    <figcaption class="lang-en" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>Fig. 11-3</em> <code>bins-record</code>: per-breakpoint log with physical interval, row range, and affected samples.
+    </figcaption>
+  </figure>
+
+  <figure style="text-align:center;">
+    <img src="https://raw.githubusercontent.com/fanjiaqi777/PreMap-V1.0-release/main/images/11-4.png"
+         alt="bins-2 中间矩阵（仅 1:2:1 流程）：用于 phase-correction，之后合成最终 bins" loading="lazy">
+    <figcaption class="lang-zh active-lang" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>图 11-4</em> <code>bins-2</code>（仅 1:2:1 流程）：用于 phase-correction 的中间矩阵，之后合成 <code>bins</code> 最终结果。
+    </figcaption>
+    <figcaption class="lang-en" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>Fig. 11-4</em> <code>bins-2</code> (1:2:1 only): intermediate matrix for phase-correction, later merged into final <code>bins</code>.
+    </figcaption>
+  </figure>
+</section>
+
+
+  <!-- 12 -->
+<section id="step4">
+  <h2 class="lang-zh active-lang">12. Step4 — OneBins Processor（基因型矫正与填补）</h2>
+  <h2 class="lang-en">12. Step4 — OneBins Processor (Genotype Correction & Imputation)</h2>
+
+  <h3 class="lang-zh active-lang">12.1 目的 / Purpose</h3>
+  <h3 class="lang-en">12.1 Purpose</h3>
+  <p class="lang-zh active-lang">将 Step3 识别到的 <em>bins</em>（连续同向片段）汇总为每个 bin 一个代表性标记（onebin marker），在代表位点上进行轻度纠错与缺失填补（impute），生成适合后续连锁分析/作图的紧凑矩阵。</p>
+  <p class="lang-en">Summarize Step3-detected <em>bins</em> (contiguous segments with consistent trend) into one representative marker per bin (“onebin marker”), perform mild correction and missing-data imputation at the representative site, and produce a compact matrix suitable for downstream linkage analysis/mapping.</p>
+
+  <h3 class="lang-zh active-lang">12.2 输入 / Input</h3>
+  <h3 class="lang-en">12.2 Input</h3>
+  <ul class="lang-zh active-lang">
+    <li>来自 Step3 的输出文件：<code>{input}_bins.xlsx</code>（注意是文件而非文件夹）。</li>
+    <li>文件中至少包含且不得重命名下列工作表：
+      <ul>
+        <li><code>bins</code>：含下划线标注的断点矩阵（最终 bins）。</li>
+        <li><code>bins-record</code>：断点记录（审计轨迹）。</li>
+      </ul>
+    </li>
+  </ul>
+  <ul class="lang-en">
+    <li>Output from Step3: <code>{input}_bins.xlsx</code> (a file, not a folder).</li>
+    <li>The file must contain (names unchanged):
+      <ul>
+        <li><code>bins</code>: breakpoint-annotated matrix (final bins; underlines mark breakpoints).</li>
+        <li><code>bins-record</code>: breakpoint log (audit trail).</li>
+      </ul>
+    </li>
+  </ul>
+  <p class="lang-zh active-lang">见 图 12-2（输入工作簿的 <code>bins</code> / <code>bins-record</code> 页签）。</p>
+  <p class="lang-en">See Fig. 12-2 (the <code>bins</code> / <code>bins-record</code> tabs in the input workbook).</p>
+
+  <h3 class="lang-zh active-lang">12.3 命令 / Command（Linux）</h3>
+  <h3 class="lang-en">12.3 Command (Linux)</h3>
+  <pre><code>./dist/run_step4 -i Input.xlsx</code></pre>
+
+  <h4 class="lang-zh active-lang">Windows（GUI）</h4>
+  <h4 class="lang-en">Windows (GUI)</h4>
+  <ol class="lang-zh active-lang">
+    <li><em>Input Browse</em>：选择 Step3 的 <code>{input}_bins.xlsx</code>；</li>
+    <li><em>Output</em>（可选）：选择保存目录与文件名；</li>
+    <li>点击 <em>Start</em> 运行。</li>
+  </ol>
+  <ol class="lang-en">
+    <li><em>Input Browse</em>: select Step3’s <code>{input}_bins.xlsx</code>.</li>
+    <li><em>Output</em> (optional): choose destination and file name.</li>
+    <li>Click <em>Start</em> to run.</li>
+  </ol>
+
+  <h3 class="lang-zh active-lang">12.4 参数说明</h3>
+  <h3 class="lang-en">12.4 Parameters</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>参数 Parameter</th>
+        <th>说明 Description</th>
+        <th>必需 Req.</th>
+        <th>默认 Default</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>-i, --input</td>
+        <td>Step3 输出文件 <code>{input}_bins.xlsx</code> / Step3 output file <code>{input}_bins.xlsx</code></td>
+        <td>是 / Yes</td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td>-o, --output</td>
+        <td>输出文件路径 / Output path</td>
+        <td>否 / No</td>
+        <td>自动生成 <code>{input_name}_onebins.xlsx</code></td>
+      </tr>
+      <tr>
+        <td>-h, --help</td>
+        <td>显示帮助 / Show help</td>
+        <td>否 / No</td>
+        <td>—</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 class="lang-zh active-lang">12.5 输出 / Outputs</h3>
+  <h3 class="lang-en">12.5 Outputs</h3>
+  <p class="lang-zh active-lang">默认得到 <code>{input}_onebins.xlsx</code>，包含至少两张表：</p>
+  <p class="lang-en">By default, <code>{input}_onebins.xlsx</code> is generated with at least two sheets:</p>
+  <ol class="lang-zh active-lang">
+    <li><strong>onebins</strong>（见 图 12-3）
+      <ul>
+        <li>每个 bin 汇总为 1 个代表位点（bin 名为该 bin 首个标记的 <code>POS</code>）。</li>
+        <li>代表位点的基因型在小范围矫正与缺失填补后给出（<em>imputed</em>）。</li>
+        <li>结果为紧凑矩阵，用于后续连锁分析或图谱构建。</li>
+      </ul>
+    </li>
+    <li><strong>bins_correction</strong>（见 图 12-4）
+      <ul>
+        <li>记录 onebin 生成过程中的修改历史：</li>
+        <li>仅对每个 bin 的第一个标记进行必要的错误基因型校正；</li>
+        <li>被校正的基因型以<strong>小写字母</strong>保存，便于人工复核。</li>
+      </ul>
+    </li>
+  </ol>
+  <ol class="lang-en">
+    <li><strong>onebins</strong> (Fig. 12-3)
+      <ul>
+        <li>Each bin is summarized to one representative site (bin name = <code>POS</code> of the first marker in that bin).</li>
+        <li>Representative genotypes are given after mild correction and imputation.</li>
+        <li>Produces a compact matrix suitable for linkage analysis or map construction.</li>
+      </ul>
+    </li>
+    <li><strong>bins_correction</strong> (Fig. 12-4)
+      <ul>
+        <li>Audit trail of edits during onebin generation:</li>
+        <li>Only the first marker of each bin is corrected when necessary.</li>
+        <li>Corrected genotypes are saved in <strong>lowercase</strong> for easy manual review.</li>
+      </ul>
+    </li>
+  </ol>
+
+  <h3 class="lang-zh active-lang">12.6 校验与建议 / Validation & Tips</h3>
+  <h3 class="lang-en">12.6 Validation & Tips</h3>
+  <ul class="lang-zh active-lang">
+    <li><strong>页签完整性</strong>：输入必须包含 <code>bins</code> 与 <code>bins-record</code>，名称不能改。</li>
+    <li><strong>谨慎改动</strong>：如需人工调整 <code>onebin</code>，请同步更新 <code>bins_correction</code> 以保持可追溯。</li>
+  </ul>
+  <ul class="lang-en">
+    <li><strong>Sheet integrity</strong>: input must include <code>bins</code> and <code>bins-record</code> (names unchanged).</li>
+    <li><strong>Be cautious with edits</strong>: if you manually adjust a <code>onebin</code>, update <code>bins_correction</code> accordingly to preserve traceability.</li>
+  </ul>
+
+  <figure style="text-align:center;">
+    <img src="https://raw.githubusercontent.com/fanjiaqi777/PreMap-V1.0-release/main/images/12-1.png"
+         alt="Step4 Windows 界面：选择 Step3 的 {input}_bins.xlsx 作为输入，设置输出后开始" loading="lazy">
+    <figcaption class="lang-zh active-lang" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>图 12-1</em> Step4 Windows 界面：选择 Step3 的 <code>{input}_bins.xlsx</code> 作为输入，设置输出路径后点击 Start。
+    </figcaption>
+    <figcaption class="lang-en" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>Fig. 12-1</em> Step4 on Windows: select Step3’s <code>{input}_bins.xlsx</code> as input, set output, then click Start.
+    </figcaption>
+  </figure>
+
+  <figure style="text-align:center;">
+    <img src="https://raw.githubusercontent.com/fanjiaqi777/PreMap-V1.0-release/main/images/12-2.png"
+         alt="输入文件结构示例：至少包含 bins 与 bins-record 两个工作表" loading="lazy">
+    <figcaption class="lang-zh active-lang" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>图 12-2</em> 输入文件的结构示例：至少包含 <code>bins</code> 与 <code>bins-record</code> 两个工作表（页签名称不可更改）。
+    </figcaption>
+    <figcaption class="lang-en" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>Fig. 12-2</em> Example input structure: at least <code>bins</code> and <code>bins-record</code> sheets (tab names must not change).
+    </figcaption>
+  </figure>
+
+  <figure style="text-align:center;">
+    <img src="https://raw.githubusercontent.com/fanjiaqi777/PreMap-V1.0-release/main/images/12-3.png"
+         alt="onebins 结果矩阵：每个 bin 汇总为一行并进行适度矫正与缺失填补" loading="lazy">
+    <figcaption class="lang-zh active-lang" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>图 12-3</em> <code>onebins</code> 结果矩阵：每个 bin 汇总为 1 行，代表位点经适度矫正与缺失填补。
+    </figcaption>
+    <figcaption class="lang-en" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>Fig. 12-3</em> <code>onebins</code> result matrix: each bin summarized to one row with mild correction and imputation.
+    </figcaption>
+  </figure>
+
+  <figure style="text-align:center;">
+    <img src="https://raw.githubusercontent.com/fanjiaqi777/PreMap-V1.0-release/main/images/12-4.png"
+         alt="bins_correction 表：各 bin 首个标记的校正记录（小写字母标识）" loading="lazy">
+    <figcaption class="lang-zh active-lang" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>图 12-4</em> <code>bins_correction</code>：显示对各 bin 首个标记的校正记录；被校正的基因型使用小写字母标识。
+    </figcaption>
+    <figcaption class="lang-en" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>Fig. 12-4</em> <code>bins_correction</code>: correction records for each bin’s first marker; corrected genotypes shown in lowercase.
+    </figcaption>
+  </figure>
+</section>
+
+
+  <!-- 13 -->
+<section id="step-addition">
+  <h2 class="lang-zh active-lang">13. Step-Addition — Additional Calculation（测序数据专用）</h2>
+  <h2 class="lang-en">13. Step-Addition — Additional Calculation (Sequencing Data Only)</h2>
+
+  <h3 class="lang-zh active-lang">13.1 模块说明</h3>
+  <h3 class="lang-en">13.1 Module Description</h3>
+  <p class="lang-zh active-lang">本模块用于在 Step2（Phasing）之后对矩阵做基于错误的统计筛查，帮助识别可能未成功杂交/混样/污染的个体。核心假设：若某个个体并未按预期与另一亲本杂交，则其基因型模式将长期更接近某一亲本，在按统一规则进行 impute/correct 时会产生显著更多的修改条目。</p>
+  <p class="lang-zh active-lang">仅支持测序数据；标记越多效果越好。对芯片等小数据集更建议人工核查与实验对照，因此不提供 Windows 版本。</p>
+  <p class="lang-zh active-lang"><strong>建议输入：</strong>Step2 的 <code>Cleaned_Results</code> 或你确认过的单一矩阵（见图 13-1）。</p>
+  <p class="lang-en">This module performs error-based statistical screening after Step2 (Phasing) to help identify individuals potentially resulting from failed crosses, sample mix-ups, or contamination. Core assumption: if an individual did not originate from the expected cross, its genotype pattern tends to resemble one parent; under unified imputation/correction rules, it will trigger noticeably more modification events.</p>
+  <p class="lang-en">Supported for sequencing data only; the more markers, the better. For small chip datasets, manual inspection and experimental validation are preferred, so no Windows version is provided.</p>
+  <p class="lang-en"><strong>Recommended input:</strong> Step2’s <code>Cleaned_Results</code> or a vetted single matrix (see Fig. 13-1).</p>
+
+  <h3 class="lang-zh active-lang">13.2 命令 / Command（Linux）</h3>
+  <h3 class="lang-en">13.2 Command (Linux)</h3>
+  <pre><code>./dist/run_step_addition_caculation -i Input.xlsx</code></pre>
+
+  <h3 class="lang-zh active-lang">13.3 参数说明</h3>
+  <h3 class="lang-en">13.3 Parameters</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>参数 Parameter</th>
+        <th>说明 Description</th>
+        <th>是否必需 Required</th>
+        <th>默认值 Default</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>-i, --input</td>
+        <td>输入 Excel（Step2 输出的单一矩阵） / Input Excel (one matrix from Step2)</td>
+        <td>是 / Yes</td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td>-o, --output</td>
+        <td>输出文件路径 / Output path</td>
+        <td>否 / No</td>
+        <td>自动生成 <code>{input_name}__processed.xlsx</code>（注意双下划线 <code>__</code>）</td>
+      </tr>
+      <tr>
+        <td>-d, --distance</td>
+        <td>最小双交换距离阈值（bp），限定单次“修改事件”的最大跨越距离，避免跨越过长区段。 / Minimum double-crossover distance (bp): limits the maximum span per “modification event” to avoid overly long segments.</td>
+        <td>否 / No</td>
+        <td>100000（100 kb）</td>
+      </tr>
+      <tr>
+        <td>-n, --n_jobs</td>
+        <td>并行核心数 / Number of CPU cores</td>
+        <td>否 / No</td>
+        <td>默认使用全部可用核心（all available cores）</td>
+      </tr>
+      <tr>
+        <td>-h, --help</td>
+        <td>查看帮助 / Show help</td>
+        <td>否 / No</td>
+        <td>—</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 class="lang-zh active-lang">13.4 输出 / Outputs</h3>
+  <h3 class="lang-en">13.4 Outputs</h3>
+  <p class="lang-zh active-lang">运行后得到 <code>{input_name}__processed.xlsx</code>，包含以下工作表，并导出排序散点图 <code>input_processed_plot.pdf</code>（见图 13-5）：</p>
+  <p class="lang-en">The run produces <code>{input_name}__processed.xlsx</code> with the following sheets, and exports a ranked scatter/line plot <code>input_processed_plot.pdf</code> (see Fig. 13-5):</p>
+  <ol class="lang-zh active-lang">
+    <li><strong>Processed Data</strong>（图 13-1）
+      <ul>
+        <li>在不改变原始大写 A/H/B 语义的前提下，用小写字母标注“被判定为潜在错误并已矫正”的单元格：A → <code>h</code>、H → <code>a</code>（仅用于标记，并非真实基因型状态）。</li>
+        <li><strong>重要：</strong>此表仅用于统计与可视化排查，不可直接作为最终基因型结果。</li>
+      </ul>
+    </li>
+    <li><strong>Modifications Summary</strong>（图 13-2）
+      <ul>
+        <li>逐条汇总每次修改的个体、物理区间（<code>POS-2</code> 起止）与修改单元格数量（Modified Cells Count）。</li>
+      </ul>
+    </li>
+    <li><strong>Modifications Summary 2</strong>（图 13-3）
+      <ul>
+        <li>在上述基础上，给出每次修改的类型（Lowercase Letter Type，如 <code>a/h</code>）与跨越距离（Position Difference）。</li>
+        <li><code>Position Difference ≤ d</code>（受 <code>--distance</code> 约束），避免把过长片段误并到一次修改里。</li>
+      </ul>
+    </li>
+    <li><strong>Modification statistic</strong>（图 13-4）
+      <ul>
+        <li>按个体聚合汇总其总修改次数（Occurrences），作为后续判别的主指标。</li>
+      </ul>
+    </li>
+    <li><strong>input_processed_plot.pdf</strong>（图 13-5）
+      <ul>
+        <li>将各个体按 Occurrences 从高到低排序绘制折线/散点；明显高于群体基线的一端个体为重点复核对象（红圈示例）。</li>
+      </ul>
+    </li>
+  </ol>
+  <ol class="lang-en">
+    <li><strong>Processed Data</strong> (Fig. 13-1)
+      <ul>
+        <li>Without changing the meaning of uppercase A/H/B, cells judged as potential errors and corrected are labeled in lowercase: A → <code>h</code>, H → <code>a</code> (visual tags only, not true genotypes).</li>
+        <li><strong>Important:</strong> this sheet is for statistics/visual screening and must not be used as final genotype calls.</li>
+      </ul>
+    </li>
+    <li><strong>Modifications Summary</strong> (Fig. 13-2)
+      <ul>
+        <li>Per-event summary of individual, physical interval (<code>POS-2</code> start–end), and Modified Cells Count.</li>
+      </ul>
+    </li>
+    <li><strong>Modifications Summary 2</strong> (Fig. 13-3)
+      <ul>
+        <li>Adds event type (Lowercase Letter Type, e.g., <code>a/h</code>) and span (Position Difference).</li>
+        <li><code>Position Difference ≤ d</code> (bounded by <code>--distance</code>) to avoid merging long segments into a single event.</li>
+      </ul>
+    </li>
+    <li><strong>Modification statistic</strong> (Fig. 13-4)
+      <ul>
+        <li>Aggregates Occurrences per individual as the primary indicator for flagging.</li>
+      </ul>
+    </li>
+    <li><strong>input_processed_plot.pdf</strong> (Fig. 13-5)
+      <ul>
+        <li>Individuals ranked by Occurrences from high to low; high outliers on the left are priority for review (red circle example).</li>
+      </ul>
+    </li>
+  </ol>
+
+  <h3 class="lang-zh active-lang">13.5 判读与建议</h3>
+  <h3 class="lang-en">13.5 Interpretation & Tips</h3>
+  <ul class="lang-zh active-lang">
+    <li><strong>只做统计，不改真值：</strong>小写 <code>a/h</code> 是“算法判为更合理的状态”的可视化标记，并不替换真实基因型；最终分析请继续沿用 Step2/Step4 的结果表。</li>
+    <li><strong>阈值选择：</strong>
+      <ul>
+        <li>若散点图头部个体过多，尝试减小 <code>-d</code>（更严格，拆分长事件）；</li>
+        <li>若同一问题个体在多条染色体上都异常偏高，则高度可疑。</li>
+      </ul>
+    </li>
+    <li><strong>并行：</strong><code>--n_jobs</code> 默认为全部核心；如与其他任务共享机器，可手动下调。</li>
+    <li><strong>复核清单：</strong>建议对每条染色体与全基因组分别统计，关注 <em>Modification statistic</em> 排名前 1–5% 的个体，并在 <em>Modifications Summary 2</em> 中查看其典型区段长度是否异常长。</li>
+  </ul>
+  <ul class="lang-en">
+    <li><strong>Statistics only, no change to truth:</strong> lowercase <code>a/h</code> are visual tags for “algorithm-suggested” states; final analyses should continue to use Step2/Step4 result sheets.</li>
+    <li><strong>Threshold tuning:</strong>
+      <ul>
+        <li>If too many individuals cluster at the top of the plot, try lowering <code>-d</code> (stricter; splits long events).</li>
+        <li>Individuals consistently high across multiple chromosomes are highly suspicious.</li>
+      </ul>
+    </li>
+    <li><strong>Parallelism:</strong> <code>--n_jobs</code> defaults to all cores; reduce it if sharing the machine.</li>
+    <li><strong>Review checklist:</strong> compute per-chromosome and genome-wide stats; focus on the top 1–5% in <em>Modification statistic</em>, and check whether their typical spans are unusually long in <em>Modifications Summary 2</em>.</li>
+  </ul>
+
+  <figure style="text-align:center;">
+    <img src="https://raw.githubusercontent.com/fanjiaqi777/PreMap-V1.0-release/main/images/13-1.png"
+         alt="Processed Data 片段：小写 a/h 仅用于统计标记" loading="lazy">
+    <figcaption class="lang-zh active-lang" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>图 13-1</em> Processed Data 片段：被判定并标注矫正的单元格以小写 <code>a/h</code> 显示，仅用于统计展示。
+    </figcaption>
+    <figcaption class="lang-en" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>Fig. 13-1</em> Processed Data excerpt: cells judged and tagged as corrected shown in lowercase <code>a/h</code>; for statistics/visualization only.
+    </figcaption>
+  </figure>
+
+  <figure style="text-align:center;">
+    <img src="https://raw.githubusercontent.com/fanjiaqi777/PreMap-V1.0-release/main/images/13-2.png"
+         alt="Modifications Summary：逐条记录修改事件与区间" loading="lazy">
+    <figcaption class="lang-zh active-lang" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>图 13-2</em> Modifications Summary：逐条记录修改事件，包含个体、<code>POS-2</code> 范围与 Modified Cells Count。
+    </figcaption>
+    <figcaption class="lang-en" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>Fig. 13-2</em> Modifications Summary: per-event log with individual, <code>POS-2</code> interval, and Modified Cells Count.
+    </figcaption>
+  </figure>
+
+  <figure style="text-align:center;">
+    <img src="https://raw.githubusercontent.com/fanjiaqi777/PreMap-V1.0-release/main/images/13-3.png"
+         alt="Modifications Summary 2：包含类型与跨越距离" loading="lazy">
+    <figcaption class="lang-zh active-lang" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>图 13-3</em> Modifications Summary 2：增加 Lowercase Letter Type 与 Position Difference（跨越距离受 <code>--distance</code> 约束）。
+    </figcaption>
+    <figcaption class="lang-en" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>Fig. 13-3</em> Modifications Summary 2: adds Lowercase Letter Type and Position Difference (span constrained by <code>--distance</code>).
+    </figcaption>
+  </figure>
+
+  <figure style="text-align:center;">
+    <img src="https://raw.githubusercontent.com/fanjiaqi777/PreMap-V1.0-release/main/images/13-4.png"
+         alt="Modification statistic：按个体聚合的修改次数" loading="lazy">
+    <figcaption class="lang-zh active-lang" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>图 13-4</em> Modification statistic：按个体聚合的修改次数（Occurrences），用于排序与阈值判定。
+    </figcaption>
+    <figcaption class="lang-en" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>Fig. 13-4</em> Modification statistic: Occurrences aggregated per individual for ranking and thresholding.
+    </figcaption>
+  </figure>
+
+  <figure style="text-align:center;">
+    <img src="https://raw.githubusercontent.com/fanjiaqi777/PreMap-V1.0-release/main/images/13-5.png"
+         alt="input_processed_plot：Occurrences 排序散点/折线图" loading="lazy">
+    <figcaption class="lang-zh active-lang" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>图 13-5</em> <code>input_processed_plot.pdf</code>：按 Occurrences 从高到低排序的散点/折线图；左侧高值离群个体为重点复核对象（红圈示例）。
+    </figcaption>
+    <figcaption class="lang-en" style="display:block;text-align:center;color:#6c757d;font-size:0.9em;margin-top:6px;">
+      <em>Fig. 13-5</em> <code>input_processed_plot.pdf</code>: scatter/line plot ranked by Occurrences; high outliers on the left are priority for review (red circle).
+    </figcaption>
+  </figure>
+</section>
+
+
+  <!-- 14 -->
+<section id="glossary">
+  <h2 class="lang-zh active-lang">14. 术语表（Glossary）</h2>
+  <h2 class="lang-en">14. Glossary</h2>
+  <ul>
+    <li>
+      <span class="lang-zh active-lang"><strong>A/H/B 编码</strong>（A=ref/ref，H=ref/alt，B=alt/alt）：统一的基因型表示法。</span>
+      <span class="lang-en"><strong>A/H/B coding</strong> (A=ref/ref, H=ref/alt, B=alt/alt): unified genotype notation.</span>
+    </li>
+    <li>
+      <span class="lang-zh active-lang"><strong>Segregating loci（分离位点）</strong>：通过 Step1 过滤后仍保持多态的位点集合。</span>
+      <span class="lang-en"><strong>Segregating loci</strong>: set of polymorphic sites remaining after Step1 filtering.</span>
+    </li>
+    <li>
+      <span class="lang-zh active-lang"><strong>1:1 / 1:2:1</strong>：理论分离比；分别对应 CP 群体中不同亲本杂合情形。</span>
+      <span class="lang-en"><strong>1:1 / 1:2:1</strong>: theoretical segregation ratios for different parental heterozygosity patterns in CP populations.</span>
+    </li>
+    <li>
+      <span class="lang-zh active-lang"><strong>Parent1 / Parent2</strong>：母本杂合 / 父本杂合的两个矩阵（Step1 输出）。</span>
+      <span class="lang-en"><strong>Parent1 / Parent2</strong>: matrices for maternal-heterozygous / paternal-heterozygous markers (Step1 output).</span>
+    </li>
+    <li>
+      <span class="lang-zh active-lang"><strong>Phase（相位）</strong>：等位基因在染色体上的方向；Step2 统一簇内相位方向。</span>
+      <span class="lang-en"><strong>Phase</strong>: allele orientation along the chromosome; Step2 unifies orientations within clusters.</span>
+    </li>
+    <li>
+      <span class="lang-zh active-lang"><strong>Cluster（簇）</strong>：按位点间相似度归并的集合；阈值 <code>s</code> 控制切割粒度。</span>
+      <span class="lang-en"><strong>Cluster</strong>: grouping of sites by similarity; threshold <code>s</code> controls granularity.</span>
+    </li>
+    <li>
+      <span class="lang-zh active-lang"><strong>l / m</strong>：小簇直接删除阈值 / 灰区簇待判阈值。</span>
+      <span class="lang-en"><strong>l / m</strong>: thresholds for deleting tiny clusters / flagging mid-frequency “gray-area” clusters.</span>
+    </li>
+    <li>
+      <span class="lang-zh active-lang"><strong>Reoriented_Clusters</strong>：对所有簇做全局方向重排的矩阵。</span>
+      <span class="lang-en"><strong>Reoriented_Clusters</strong>: matrix after globally reorienting all clusters.</span>
+    </li>
+    <li>
+      <span class="lang-zh active-lang"><strong>Marked_Results</strong>：删除低频小簇，并标注灰区簇及邻域相似度指标的矩阵。</span>
+      <span class="lang-en"><strong>Marked_Results</strong>: matrix with low-frequency tiny clusters removed and gray clusters annotated with neighborhood similarity metrics.</span>
+    </li>
+    <li>
+      <span class="lang-zh active-lang"><strong>Cleaned_Results</strong>：Step2 的最终清理矩阵。</span>
+      <span class="lang-en"><strong>Cleaned_Results</strong>: final cleaned matrix from Step2.</span>
+    </li>
+    <li>
+      <span class="lang-zh active-lang"><strong>Breakpoint（断点）</strong>：个体染色体上重组发生的位置；Step3 用下划线标注。</span>
+      <span class="lang-en"><strong>Breakpoint</strong>: location of recombination on an individual’s chromosome; underlined in Step3.</span>
+    </li>
+    <li>
+      <span class="lang-zh active-lang"><strong>bins</strong>：按断点划分出的连续同向片段。</span>
+      <span class="lang-en"><strong>bins</strong>: contiguous segments with consistent trend defined by breakpoints.</span>
+    </li>
+    <li>
+      <span class="lang-zh active-lang"><strong>bins-record</strong>：断点审计表，记录位置、范围、受影响个体等。</span>
+      <span class="lang-en"><strong>bins-record</strong>: breakpoint audit log including positions, ranges, and affected individuals.</span>
+    </li>
+    <li>
+      <span class="lang-zh active-lang"><strong>onebins</strong>：Step4 将每个 bin 汇总为 1 行的代表性标记矩阵。</span>
+      <span class="lang-en"><strong>onebins</strong>: representative-marker matrix with one row per bin produced in Step4.</span>
+    </li>
+    <li>
+      <span class="lang-zh active-lang"><strong>bins_correction</strong>：onebin 生成过程的修改历史（首位点校正，小写字母标识）。</span>
+      <span class="lang-en"><strong>bins_correction</strong>: edit history during onebin generation (first-site corrections shown in lowercase).</span>
+    </li>
+    <li>
+      <span class="lang-zh active-lang"><strong>Step-Addition</strong>：仅测序数据使用的附加统计模块，用修改事件数量筛查异常个体。</span>
+      <span class="lang-en"><strong>Step-Addition</strong>: sequencing-only auxiliary statistics module to flag anomalous individuals by modification event counts.</span>
+    </li>
+    <li>
+      <span class="lang-zh active-lang"><strong>MAF</strong>：次要等位基因频率；常用于早期过滤。</span>
+      <span class="lang-en"><strong>MAF</strong>: minor allele frequency; commonly used for early filtering.</span>
+    </li>
+    <li>
+      <span class="lang-zh active-lang"><strong>POS-2</strong>：染色体内的物理位置列（按参考基因组坐标，如 Lovell v2.0）。</span>
+      <span class="lang-en"><strong>POS-2</strong>: physical position within a chromosome (reference coordinates, e.g., Lovell v2.0).</span>
+    </li>
+    <li>
+      <span class="lang-zh active-lang"><strong>缺失符号 <code>-</code></strong>：无有效基因型的占位符。</span>
+      <span class="lang-en"><strong>Missing symbol <code>-</code></strong>: placeholder for missing genotype calls.</span>
+    </li>
+  </ul>
+</section>
+
+
+  <!-- 15 -->
+<section id="templates">
+  <h2 class="lang-zh active-lang">15. 输入模板（Input Templates）</h2>
+  <h2 class="lang-en">15. Input Templates</h2>
+
+  <h3 class="lang-zh active-lang">Step1 输入（sheet：<code>step1</code>）</h3>
+  <h3 class="lang-en">Step1 Input (sheet: <code>step1</code>)</h3>
+  <p class="lang-zh active-lang"><strong>前 5 列表头（区分大小写）：</strong><code>Number, CHR, POS-2, Female, Male</code></p>
+  <p class="lang-en"><strong>First 5 header columns (case-sensitive):</strong> <code>Number, CHR, POS-2, Female, Male</code></p>
+  <ul>
+    <li class="lang-zh active-lang">从第 F 列起：<code>Individual1, Individual2, …</code></li>
+    <li class="lang-en">From column F onward: <code>Individual1, Individual2, …</code></li>
+    <li class="lang-zh active-lang">若来自 Step0_5，应包含末端 6 列：<code>A_Count, H_Count, B_Count, -_Count, f(A), f(H)</code>。</li>
+    <li class="lang-en">If produced by Step0_5, include the trailing six columns: <code>A_Count, H_Count, B_Count, -_Count, f(A), f(H)</code>.</li>
+  </ul>
+
+  <h3 class="lang-zh active-lang">Parent1 / Parent2（Step1 输出）</h3>
+  <h3 class="lang-en">Parent1 / Parent2 (Step1 output)</h3>
+  <ul>
+    <li class="lang-zh active-lang">直接保存为独立工作簿供 Step2 使用。</li>
+    <li class="lang-en">Save as separate workbooks for Step2.</li>
+  </ul>
+
+  <h3 class="lang-zh active-lang">Step3 输入（1:1）</h3>
+  <h3 class="lang-en">Step3 Input (1:1)</h3>
+  <ul>
+    <li class="lang-zh active-lang">Step2 的 <code>{input}_phased.xlsx</code> 中任一单一矩阵（建议 <code>Cleaned_Results</code>）。</li>
+    <li class="lang-en">Any single matrix from Step2’s <code>{input}_phased.xlsx</code> (recommended: <code>Cleaned_Results</code>).</li>
+  </ul>
+
+  <h3 class="lang-zh active-lang">Step3 输入（1:2:1）</h3>
+  <h3 class="lang-en">Step3 Input (1:2:1)</h3>
+  <ul>
+    <li class="lang-zh active-lang">Step1 的 <code>1 to 2 to 1</code> 工作表保存为独立文件。</li>
+    <li class="lang-en">Save Step1’s <code>1 to 2 to 1</code> sheet as a separate file.</li>
+  </ul>
+
+  <h3 class="lang-zh active-lang">Step4 输入</h3>
+  <h3 class="lang-en">Step4 Input</h3>
+  <ul>
+    <li class="lang-zh active-lang">Step3 的 <code>{input}_bins.xlsx</code>（至少包含 <code>bins</code>、<code>bins-record</code>，不可改名）。</li>
+    <li class="lang-en">Step3’s <code>{input}_bins.xlsx</code> (must include <code>bins</code> and <code>bins-record</code>; names unchanged).</li>
+  </ul>
+</section>
+
+
+<!-- 16 -->
+<section id="cheatsheet">
+  <h2 class="lang-zh active-lang">16. 参数速查表（Parameter Cheat Sheet）</h2>
+  <h2 class="lang-en">16. Parameter Cheat Sheet</h2>
+
+  <!-- 中文：整表中文 -->
+  <table class="lang-zh active-lang">
+    <thead>
+      <tr>
+        <th>Step</th>
+        <th>参数</th>
+        <th>说明</th>
+        <th>默认值</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Step0</td><td>-i / --input</td><td>输入 VCF</td><td>—</td></tr>
+      <tr><td></td><td>-o / --output</td><td>输出目录/文件</td><td>自动</td></tr>
+      <tr><td></td><td>-x</td><td>指定染色体（如 -x Pp01）</td><td>全基因组</td></tr>
+
+      <tr><td>Step0_Indel</td><td>同 Step0</td><td>用于 INDEL/SV 等二等位</td><td>—</td></tr>
+
+      <tr><td>Step0_5</td><td>-i</td><td>输入 *_processed.xlsx</td><td>—</td></tr>
+      <tr><td></td><td>-o</td><td>输出 *_processed_for_step1.xlsx</td><td>自动</td></tr>
+
+      <tr><td>Step1</td><td>-i</td><td>输入 *_processed_for_step1.xlsx</td><td>—</td></tr>
+      <tr><td></td><td>-d / --dash-threshold</td><td>缺失率阈值 d = -_Count / 总样本</td><td>0.20</td></tr>
+      <tr><td></td><td>-e / --error-rate</td><td>允许错误率（轻度纠错上限）</td><td>0.03</td></tr>
+      <tr><td></td><td>-t / --threshold</td><td>纯合频率最小值（0 关闭）</td><td>0.055</td></tr>
+
+      <tr><td>Step2</td><td>-i</td><td>Parent1.xlsx / Parent2.xlsx</td><td>—</td></tr>
+      <tr><td></td><td>-s / --similarity_threshold</td><td>相似性阈值（越高越易切细）</td><td>0.90</td></tr>
+      <tr><td></td><td>-l / --low_threshold</td><td>低频簇直接删除</td><td>0.05</td></tr>
+      <tr><td></td><td>-m / --mid_threshold</td><td>灰区簇标记待判</td><td>0.15</td></tr>
+
+      <tr><td>Step3</td><td>-i</td><td>Step2 输出或 Step1“1 to 2 to 1”</td><td>—</td></tr>
+      <tr><td></td><td>-o</td><td>功能选项：1 = 1:1，2 = 1:2:1</td><td>—</td></tr>
+
+      <tr><td>Step4</td><td>-i</td><td>{input}_bins.xlsx</td><td>—</td></tr>
+      <tr><td></td><td>-o</td><td>输出 {input}_onebins.xlsx</td><td>自动</td></tr>
+
+      <tr><td>Step-Addition</td><td>-i</td><td>Step2 单一矩阵</td><td>—</td></tr>
+      <tr><td></td><td>-o</td><td>输出 {input}__processed.xlsx</td><td>自动</td></tr>
+      <tr><td></td><td>-d / --distance</td><td>单次修改的最大跨越距离（bp）</td><td>100000</td></tr>
+      <tr><td></td><td>-n / --n_jobs</td><td>并行核心数</td><td>全部可用</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 英文：整表英文 -->
+  <table class="lang-en">
+    <thead>
+      <tr>
+        <th>Step</th>
+        <th>Parameter</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Step0</td><td>-i / --input</td><td>Input VCF</td><td>—</td></tr>
+      <tr><td></td><td>-o / --output</td><td>Output path (dir/file)</td><td>Auto</td></tr>
+      <tr><td></td><td>-x</td><td>Extract specific chromosome (e.g., -x Pp01)</td><td>Whole genome</td></tr>
+
+      <tr><td>Step0_Indel</td><td>Same as Step0</td><td>For INDEL/SV and other biallelic variants</td><td>—</td></tr>
+
+      <tr><td>Step0_5</td><td>-i</td><td>Input *_processed.xlsx</td><td>—</td></tr>
+      <tr><td></td><td>-o</td><td>Output *_processed_for_step1.xlsx</td><td>Auto</td></tr>
+
+      <tr><td>Step1</td><td>-i</td><td>Input *_processed_for_step1.xlsx</td><td>—</td></tr>
+      <tr><td></td><td>-d / --dash-threshold</td><td>Missing threshold d = -_Count / total samples</td><td>0.20</td></tr>
+      <tr><td></td><td>-e / --error-rate</td><td>Allowed error rate (light correction cap)</td><td>0.03</td></tr>
+      <tr><td></td><td>-t / --threshold</td><td>Minimum homozygous fraction (0 to disable)</td><td>0.055</td></tr>
+
+      <tr><td>Step2</td><td>-i</td><td>Parent1.xlsx / Parent2.xlsx</td><td>—</td></tr>
+      <tr><td></td><td>-s / --similarity_threshold</td><td>Similarity threshold (higher = finer splitting)</td><td>0.90</td></tr>
+      <tr><td></td><td>-l / --low_threshold</td><td>Low-frequency cutoff (delete tiny clusters)</td><td>0.05</td></tr>
+      <tr><td></td><td>-m / --mid_threshold</td><td>Mid-frequency cutoff (flag gray clusters)</td><td>0.15</td></tr>
+
+      <tr><td>Step3</td><td>-i</td><td>Step2 output or Step1 “1 to 2 to 1”</td><td>—</td></tr>
+      <tr><td></td><td>-o</td><td>Option: 1 = 1:1, 2 = 1:2:1</td><td>—</td></tr>
+
+      <tr><td>Step4</td><td>-i</td><td>{input}_bins.xlsx</td><td>—</td></tr>
+      <tr><td></td><td>-o</td><td>Output {input}_onebins.xlsx</td><td>Auto</td></tr>
+
+      <tr><td>Step-Addition</td><td>-i</td><td>One matrix from Step2</td><td>—</td></tr>
+      <tr><td></td><td>-o</td><td>Output {input}__processed.xlsx</td><td>Auto</td></tr>
+      <tr><td></td><td>-d / --distance</td><td>Max span per correction (bp)</td><td>100000</td></tr>
+      <tr><td></td><td>-n / --n_jobs</td><td>Number of CPU cores</td><td>All available</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- 17 -->
+<section id="commands">
+  <h2 class="lang-zh active-lang">17. 命令合集（Command Cookbook）</h2>
+  <h2 class="lang-en">17. Command Cookbook</h2>
+
+  <h3 class="lang-zh active-lang">Linux 快速开始</h3>
+  <h3 class="lang-en">Linux Quick Start</h3>
+
+  <!-- 中文版命令块（保留你的中文注释） -->
+  <pre class="lang-zh active-lang"><code># Step0（测序数据专用）
+./dist/run_step0 -i final_filtered_output.vcf
+# 或 INDEL
+./dist/run_step0_Indel -i final_filtered_output_indel.vcf
+
+# Step0_5
+./dist/run_step0_5 -i Pp01_processed.xlsx
+
+# Step1
+./dist/run_step1 -i Pp01_processed_for_step1.xlsx
+
+# Step2（分别对 Parent1、Parent2 跑）
+./dist/run_step2 -i Parent1.xlsx -s 0.90 -l 0.05 -m 0.15
+
+# Step3（1:1）
+./dist/run_step3 -i Parent1_phased.xlsx -o 1
+# Step3（1:2:1）
+./dist/run_step3 -i Pp01_step1.xlsx -o 2
+
+# Step4
+./dist/run_step4 -i Parent1_bins.xlsx
+
+# Step-Addition（可选）
+./dist/run_step_addition_caculation -i Parent1_phased.xlsx -d 100000</code></pre>
+
+  <!-- 英文版命令块（英文注释） -->
+  <pre class="lang-en"><code># Step0 (sequencing data only)
+./dist/run_step0 -i final_filtered_output.vcf
+# Or: INDEL
+./dist/run_step0_Indel -i final_filtered_output_indel.vcf
+
+# Step0_5
+./dist/run_step0_5 -i Pp01_processed.xlsx
+
+# Step1
+./dist/run_step1 -i Pp01_processed_for_step1.xlsx
+
+# Step2 (run Parent1 and Parent2 separately)
+./dist/run_step2 -i Parent1.xlsx -s 0.90 -l 0.05 -m 0.15
+
+# Step3 (1:1)
+./dist/run_step3 -i Parent1_phased.xlsx -o 1
+# Step3 (1:2:1)
+./dist/run_step3 -i Pp01_step1.xlsx -o 2
+
+# Step4
+./dist/run_step4 -i Parent1_bins.xlsx
+
+# Step-Addition (optional)
+./dist/run_step_addition_caculation -i Parent1_phased.xlsx -d 100000</code></pre>
+
+  <h3 class="lang-zh active-lang">Windows CLI 示例</h3>
+  <h3 class="lang-en">Windows CLI Example</h3>
+  <p class="lang-zh active-lang">GUI 见各章截图：<em>Browse</em> → <em>Save as</em>/<em>Start</em>；结果写回/另存为相应工作簿。</p>
+  <p class="lang-en">See GUI screenshots in each chapter: <em>Browse</em> → <em>Save as</em>/<em>Start</em>; results are written back or saved as new workbooks.</p>
+</section>
+
+<!-- 18 -->
+<section id="support">
+  <h2 class="lang-zh active-lang">18. 支持与反馈（Support & Feedback）</h2>
+  <h2 class="lang-en">18. Support & Feedback</h2>
+
+  <div class="note">
+    <p class="lang-zh active-lang"><strong>联系我们（Contact）</strong></p>
+    <p class="lang-en"><strong>Contact</strong></p>
+
+    <p class="lang-zh active-lang"><strong>Email</strong>：<a href="mailto:fjq690510307@gmail.com">fjq690510307@gmail.com</a>（问题咨询 / 商业授权 / 合作）</p>
+    <p class="lang-en"><strong>Email</strong>: <a href="mailto:fjq690510307@gmail.com">fjq690510307@gmail.com</a> (questions / commercial licensing / collaboration)</p>
+
+    <p class="lang-zh active-lang"><strong>建议附上</strong>：软件版本（v1.0）、操作系统、步骤与命令、输入数据概况（样本数/染色体）、报错截图/日志、可复现实例（必要时截取 20–50 行示例矩阵）。</p>
+    <p class="lang-en"><strong>Please include</strong>: software version (v1.0), OS, steps & commands, data profile (sample count/chromosomes), error screenshots/logs, and a minimal reproducible example (e.g., a 20–50 row matrix excerpt if needed).</p>
+  </div>
+
+  <h3 class="lang-zh active-lang">问题模板（Issue template）</h3>
+  <h3 class="lang-en">Issue Template</h3>
+  <ul>
+    <li class="lang-zh active-lang"><strong>主题：</strong>[StepX] 问题简述</li>
+    <li class="lang-en"><strong>Subject:</strong> [StepX] short problem summary</li>
+
+    <li class="lang-zh active-lang"><strong>环境：</strong>OS（Win/Linux 版本）、CPU/RAM</li>
+    <li class="lang-en"><strong>Environment:</strong> OS (Win/Linux version), CPU/RAM</li>
+
+    <li class="lang-zh active-lang"><strong>命令/界面参数：</strong>（粘贴命令或截图）</li>
+    <li class="lang-en"><strong>Command/GUI params:</strong> (paste CLI command or screenshot)</li>
+
+    <li class="lang-zh active-lang"><strong>复现步骤：</strong>（最小可复现步骤）</li>
+    <li class="lang-en"><strong>Reproduction steps:</strong> (minimal reproducible steps)</li>
+
+    <li class="lang-zh active-lang"><strong>期望 vs 实际：</strong>（期望结果 / 实际结果）</li>
+    <li class="lang-en"><strong>Expected vs Actual:</strong> (expected result / actual result)</li>
+
+    <li class="lang-zh active-lang"><strong>附件：</strong>最小可复现数据（去敏）</li>
+    <li class="lang-en"><strong>Attachments:</strong> minimal reproducible data (de-identified)</li>
+  </ul>
+
+  <h3 class="lang-zh active-lang">响应与跟进（Response & Follow-up）</h3>
+  <h3 class="lang-en">Response & Follow-up</h3>
+  <p class="lang-zh active-lang">我们会按问题重要性与可复现性优先处理；若涉及数据隐私，请先做匿名化或截取片段。</p>
+  <p class="lang-en">We prioritize issues by severity and reproducibility. If data privacy is involved, please anonymize or submit excerpts first.</p>
+</section>
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById('lang-toggle-btn');
+  const zhEls = document.querySelectorAll('.lang-zh');
+  const enEls = document.querySelectorAll('.lang-en');
+  const zhTitle = 'PreMap v1.0 用户手册';
+  const enTitle = 'PreMap v1.0 User Manual';
+
+  const setLanguage = (lang) => {
+    if (lang === 'en') {
+      zhEls.forEach(el => el.classList.remove('active-lang'));
+      enEls.forEach(el => el.classList.add('active-lang'));
+      btn.textContent = '切换到中文';
+      document.documentElement.lang = 'en';
+      document.title = enTitle;
+      localStorage.setItem('premap_lang','en');
+    } else {
+      enEls.forEach(el => el.classList.remove('active-lang'));
+      zhEls.forEach(el => el.classList.add('active-lang'));
+      btn.textContent = 'Switch to English';
+      document.documentElement.lang = 'zh-CN';
+      document.title = zhTitle;
+      localStorage.setItem('premap_lang','zh');
+    }
+  };
+
+  btn.addEventListener('click', () => {
+    const current = localStorage.getItem('premap_lang') || 'zh';
+    setLanguage(current === 'zh' ? 'en' : 'zh');
+  });
+
+  // Initial language
+  const preferred = localStorage.getItem('premap_lang') || 'zh';
+  setLanguage(preferred);
+
+  // Scroll spy
+  const sections = document.querySelectorAll("section");
+  const navLinks = document.querySelectorAll("#toc li a");
+  const headerOffset = parseInt(getComputedStyle(document.documentElement)
+                        .getPropertyValue('--header-height'),10) + 20;
+
+  const onScroll = () => {
+    let current = "";
+    sections.forEach((section) => {
+      const sectionTop = section.offsetTop;
+      if (pageYOffset >= sectionTop - headerOffset) {
+        current = section.getAttribute("id");
+      }
+    });
+    navLinks.forEach((a) => {
+      a.classList.remove("active");
+      if (a.getAttribute('href').substring(1) === current) {
+        a.classList.add("active");
+      }
+    });
+  };
+  window.addEventListener("scroll", onScroll);
+  onScroll();
+});
+</script>
+</body>
+</html>

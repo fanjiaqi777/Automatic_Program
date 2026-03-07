@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 520" width="1200" height="520">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0d1117"/>
+      <stop offset="100%" style="stop-color:#161b22"/>
+    </linearGradient>
+    <linearGradient id="titleBar" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#2d333b"/>
+      <stop offset="100%" style="stop-color:#22272e"/>
+    </linearGradient>
+    <linearGradient id="accentLine" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00d2ff;stop-opacity:0"/>
+      <stop offset="15%" style="stop-color:#00d2ff;stop-opacity:1"/>
+      <stop offset="85%" style="stop-color:#48e8c8;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#48e8c8;stop-opacity:0"/>
+    </linearGradient>
+    <linearGradient id="cyanGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00d2ff"/>
+      <stop offset="100%" style="stop-color:#48e8c8"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="textGlow">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Terminal window background -->
+  <rect width="1200" height="520" rx="12" fill="url(#bgGrad)"/>
+
+  <!-- Terminal title bar -->
+  <rect width="1200" height="40" rx="12" fill="url(#titleBar)"/>
+  <rect y="28" width="1200" height="12" fill="url(#titleBar)"/>
+
+  <!-- Traffic light buttons -->
+  <circle cx="28" cy="20" r="7" fill="#ff5f57"/>
+  <circle cx="52" cy="20" r="7" fill="#febc2e"/>
+  <circle cx="76" cy="20" r="7" fill="#28c840"/>
+
+  <!-- Title bar text -->
+  <text x="600" y="25" text-anchor="middle" font-family="'SF Mono','Fira Code','Cascadia Code',Consolas,monospace" font-size="13" fill="#8b949e">premap@genetics ~ %</text>
+
+  <!-- Scan line effect (subtle) -->
+  <g opacity="0.015">
+    <line x1="0" y1="60" x2="1200" y2="60" stroke="#fff" stroke-width="1"/>
+    <line x1="0" y1="62" x2="1200" y2="62" stroke="#fff" stroke-width="1"/>
+    <line x1="0" y1="80" x2="1200" y2="80" stroke="#fff" stroke-width="1"/>
+    <line x1="0" y1="82" x2="1200" y2="82" stroke="#fff" stroke-width="1"/>
+    <line x1="0" y1="100" x2="1200" y2="100" stroke="#fff" stroke-width="1"/>
+    <line x1="0" y1="102" x2="1200" y2="102" stroke="#fff" stroke-width="1"/>
+    <line x1="0" y1="120" x2="1200" y2="120" stroke="#fff" stroke-width="1"/>
+    <line x1="0" y1="122" x2="1200" y2="122" stroke="#fff" stroke-width="1"/>
+  </g>
+
+  <!-- Prompt line -->
+  <text x="40" y="75" font-family="'SF Mono','Fira Code','Cascadia Code',Consolas,monospace" font-size="14" fill="#8b949e">
+    <tspan fill="#48e8c8">$</tspan> cat banner.txt
+  </text>
+
+  <!-- ██ ASCII ART: PreMap ██ -->
+  <!-- Using ansi_shadow style, rendered with gradient colors -->
+  <g filter="url(#textGlow)">
+    <text font-family="'SF Mono','Fira Code','Cascadia Code',Consolas,monospace" font-size="18" letter-spacing="0" xml:space="preserve">
+      <tspan x="135" y="120" fill="url(#cyanGrad)">██████╗ ██████╗ ███████╗███╗   ███╗ █████╗ ██████╗ </tspan>
+      <tspan x="135" y="142" fill="url(#cyanGrad)">██╔══██╗██╔══██╗██╔════╝████╗ ████║██╔══██╗██╔══██╗</tspan>
+      <tspan x="135" y="164" fill="url(#cyanGrad)">██████╔╝██████╔╝█████╗  ██╔████╔██║███████║██████╔╝</tspan>
+      <tspan x="135" y="186" fill="url(#cyanGrad)">██╔═══╝ ██╔══██╗██╔══╝  ██║╚██╔╝██║██╔══██║██╔═══╝ </tspan>
+      <tspan x="135" y="208" fill="url(#cyanGrad)">██║     ██║  ██║███████╗██║ ╚═╝ ██║██║  ██║██║     </tspan>
+      <tspan x="135" y="230" fill="url(#cyanGrad)">╚═╝     ╚═╝  ╚═╝╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝╚═╝     </tspan>
+    </text>
+  </g>
+
+  <!-- Accent line -->
+  <rect x="40" y="250" width="1120" height="1" fill="url(#accentLine)" opacity="0.6"/>
+
+  <!-- Version + tagline -->
+  <text x="40" y="280" font-family="'SF Mono','Fira Code','Cascadia Code',Consolas,monospace" font-size="14" fill="#8b949e">
+    <tspan fill="#48e8c8">$</tspan> premap --version
+  </text>
+  <text x="40" y="302" font-family="'SF Mono','Fira Code','Cascadia Code',Consolas,monospace" font-size="14" fill="#e6edf3">
+    PreMap v1.0 — End-to-End Genotype Processing for Diploid Full-Sib Families
+  </text>
+
+  <!-- Pipeline visualization as terminal output -->
+  <text x="40" y="336" font-family="'SF Mono','Fira Code','Cascadia Code',Consolas,monospace" font-size="14" fill="#8b949e">
+    <tspan fill="#48e8c8">$</tspan> premap --pipeline
+  </text>
+
+  <text font-family="'SF Mono','Fira Code','Cascadia Code',Consolas,monospace" font-size="13">
+    <tspan x="40" y="360" fill="#8b949e">  [</tspan><tspan fill="#00d2ff">VCF</tspan><tspan fill="#8b949e">]</tspan>
+    <tspan fill="#3d444d"> ──▸ </tspan>
+    <tspan fill="#8b949e">[</tspan><tspan fill="#48e8c8">Clean</tspan><tspan fill="#8b949e">]</tspan>
+    <tspan fill="#3d444d"> ──▸ </tspan>
+    <tspan fill="#8b949e">[</tspan><tspan fill="#00d2ff">Phase</tspan><tspan fill="#8b949e">]</tspan>
+    <tspan fill="#3d444d"> ──▸ </tspan>
+    <tspan fill="#8b949e">[</tspan><tspan fill="#48e8c8">Bin</tspan><tspan fill="#8b949e">]</tspan>
+    <tspan fill="#3d444d"> ──▸ </tspan>
+    <tspan fill="#8b949e">[</tspan><tspan fill="#00d2ff">Impute</tspan><tspan fill="#8b949e">]</tspan>
+    <tspan fill="#3d444d"> ──▸ </tspan>
+    <tspan fill="#8b949e">[</tspan><tspan fill="#48e8c8" font-weight="bold">OneBins</tspan><tspan fill="#8b949e">]</tspan>
+    <tspan fill="#28c840"> ✓ ready</tspan>
+  </text>
+
+  <!-- Info block -->
+  <text font-family="'SF Mono','Fira Code','Cascadia Code',Consolas,monospace" font-size="12">
+    <tspan x="40" y="400" fill="#8b949e">  ├── </tspan><tspan fill="#e6edf3">Markers   </tspan><tspan fill="#8b949e">: SNP · INDEL · any biallelic</tspan>
+    <tspan x="40" y="420" fill="#8b949e">  ├── </tspan><tspan fill="#e6edf3">Platform  </tspan><tspan fill="#8b949e">: Linux (CLI) · Windows (GUI)</tspan>
+    <tspan x="40" y="440" fill="#8b949e">  ├── </tspan><tspan fill="#e6edf3">Species   </tspan><tspan fill="#8b949e">: Diploid </tspan><tspan fill="#48e8c8" font-style="italic">Prunus</tspan><tspan fill="#8b949e"> full-sib families</tspan>
+    <tspan x="40" y="460" fill="#8b949e">  └── </tspan><tspan fill="#e6edf3">Deps      </tspan><tspan fill="#8b949e">: None — pre-built executables</tspan>
+  </text>
+
+  <!-- Blinking cursor -->
+  <text x="40" y="498" font-family="'SF Mono','Fira Code','Cascadia Code',Consolas,monospace" font-size="14" fill="#48e8c8">$</text>
+  <rect x="56" y="486" width="9" height="17" fill="#48e8c8" opacity="0.8">
+    <animate attributeName="opacity" values="0.8;0;0.8" dur="1.2s" repeatCount="indefinite"/>
+  </rect>
+</svg>

@@ -1,0 +1,34 @@
+cff-version: 1.2.0
+title: "PreMap: End-to-End Genotype Processing for Diploid Full-Sib Families"
+message: "If you use this software, please cite it using the metadata from this file."
+type: software
+authors:
+  - given-names: Jiaqi
+    family-names: Fan
+    email: fjq690510307@gmail.com
+repository-code: "https://github.com/fanjiaqi777/PreMap-V1.0-release"
+license: CC-BY-NC-ND-4.0
+version: "1.0"
+date-released: "2025-07-01"
+preferred-citation:
+  type: article
+  authors:
+    - given-names: Jiaqi
+      family-names: Fan
+    - given-names: Jinlong
+      family-names: Wu
+    - given-names: Pere
+      family-names: Arús
+    - given-names: Yong
+      family-names: Li
+    - given-names: Ke
+      family-names: Cao
+    - given-names: Lirong
+      family-names: Wang
+  title: "Integrating whole-genome resequencing and machine learning to refine QTL analysis for fruit quality traits in peach"
+  journal: "Horticulture Research"
+  volume: 12
+  issue: 7
+  article-number: uhaf087
+  year: 2025
+  doi: "10.1093/hr/uhaf087"
