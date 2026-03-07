@@ -3,14 +3,11 @@
 </p>
 
 <p align="center">
-  <strong>End-to-end genotype processing & cleaning for diploid <em>Prunus</em> full-sib families</strong>
-</p>
-
-<p align="center">
   <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.8+-3776AB?logo=python&logoColor=white" alt="Python 3.8+"/></a>
-  <a href="#download"><img src="https://img.shields.io/badge/Platform-Linux%20%7C%20Windows-0078D4?logo=linux&logoColor=white" alt="Platform"/></a>
+  <a href="#-download"><img src="https://img.shields.io/badge/Platform-Linux%20%7C%20Windows-0078D4?logo=windowsterminal&logoColor=white" alt="Platform"/></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-CC%20BY--NC--ND%204.0-EAB308?logo=creativecommons&logoColor=white" alt="License"/></a>
-  <a href="https://doi.org/10.1093/hr/uhaf087"><img src="https://img.shields.io/badge/DOI-10.1093%2Fhr%2Fuhaf087-blue" alt="DOI"/></a>
+  <a href="https://doi.org/10.1093/hr/uhaf087"><img src="https://img.shields.io/badge/DOI-10.1093%2Fhr%2Fuhaf087-1674B1?logo=doi&logoColor=white" alt="DOI"/></a>
+  <a href="https://github.com/fanjiaqi777/PreMap-V1.0-release/releases"><img src="https://img.shields.io/github/v/release/fanjiaqi777/PreMap-V1.0-release?color=00C853&logo=github" alt="Release"/></a>
   <a href="https://github.com/fanjiaqi777/PreMap-V1.0-release/stargazers"><img src="https://img.shields.io/github/stars/fanjiaqi777/PreMap-V1.0-release?style=social" alt="Stars"/></a>
 </p>
 
@@ -18,90 +15,131 @@
   <b>English</b> | <a href="README_CN.md">中文</a>
 </p>
 
----
+<br/>
 
-## Overview
+> **PreMap** transforms raw variant calls (VCF 4.2+) or custom marker matrices into clean, phased, map-ready genotype bins — fully automated, with a complete audit trail. Designed for diploid *Prunus* full-sib families, it accepts any biallelic marker type (SNP, INDEL, etc.) and outputs directly compatible with mainstream linkage-mapping software.
 
-**PreMap** transforms raw variant calls (VCF 4.2+) or custom marker matrices into clean, phased, map-ready genotype bins — fully automated, with a complete audit trail. Designed for diploid *Prunus* full-sib families, it accepts any biallelic marker type (SNP, INDEL, etc.) and outputs data directly compatible with mainstream linkage-mapping software.
+<br/>
+
+## 🧬 Pipeline
 
 <p align="center">
-  <img src="images/Pepline-eng-01.jpg" alt="PreMap Pipeline Overview" width="85%"/>
+  <img src="images/Pepline-eng-01.jpg" alt="PreMap Pipeline" width="90%"/>
 </p>
 
-### Key Features
+<details>
+<summary><b>Module details</b></summary>
+<br/>
 
-| Feature | Description |
-|:--------|:------------|
-| **Dual-channel input** | SNP & INDEL from VCF, or any biallelic marker via Excel |
-| **Pseudo-testcross strategy** | Automatic segregation classification (1:1, 1:2:1, Parent-specific) |
-| **Robust phasing** | Triple-threshold (s/l/m) phase correction with IBD detection |
-| **Recombination binning** | Individual-level breakpoint identification & population-level minimal units |
-| **Error correction & imputation** | Genotype correction with full change logging |
-| **Zero-dependency deployment** | Pre-built executables — no Python installation needed |
-| **Cross-platform** | Linux CLI + Windows GUI |
+| Module | Function | Platform |
+|:-------|:---------|:--------:|
+| **Step 0** | VCF normalization, chromosome splitting & genotype recoding | Linux |
+| **Step 0.5** | Genotype frequency & statistics computation | All |
+| **Step 1** | Cleaning, filtering & pseudo-testcross segregation classification | All |
+| **Step 2** | Phase correction, cluster cleaning & IBD detection | All |
+| **Step 3** | Individual-level recombination breakpoint identification (binning) | All |
+| **Step 4** | Population-level OneBins — bin-marker correction & imputation | All |
+| **Step-Addition** | Additional statistics for hybrid verification (sequencing data) | All |
 
----
+</details>
 
-## Download
+<br/>
+
+## ⚡ Key Features
 
 <table>
 <tr>
-<td width="50%" align="center">
+<td width="50%">
 
-### Linux
+**🧪 Biallelic Marker Support**
+SNP, INDEL, and any custom biallelic markers from VCF or Excel input.
 
-Command-line interface
+**🔗 Robust Phasing**
+Triple-threshold (s/l/m) phase correction with automatic IBD detection.
 
-**[Download PreMap-linux-v1.0-release.tar.gz](https://github.com/fanjiaqi777/PreMap-V1.0-release/releases/download/v1.0/PreMap-linux-v1.0-release.tar.gz)**
-
-Or clone the repository:
-```bash
-git clone https://github.com/fanjiaqi777/PreMap-V1.0-release.git
-cd PreMap-V1.0-release/dist
-chmod +x run_step*
-```
-
-No Python environment needed.
+**📊 Recombination Binning**
+Individual-level breakpoint identification & population-level minimal recombination units.
 
 </td>
-<td width="50%" align="center">
+<td width="50%">
 
-### Windows
+**🔍 Full Traceability**
+Complete audit trail — every correction and imputation is logged.
 
-Graphical user interface (GUI)
+**📦 Zero Dependencies**
+Pre-built executables. No Python, no pip, no setup.
 
-**[Download PreMap_v1.0.exe](https://github.com/fanjiaqi777/PreMap-V1.0-release/releases/download/v1.0/PreMap_v1.0.exe)**
-
-Double-click to run. No installation required.
-For small to medium-scale datasets.
+**🖥️ Cross-Platform**
+Linux command-line + Windows GUI — same pipeline, your choice.
 
 </td>
 </tr>
 </table>
 
----
+<br/>
 
-## Pipeline Modules
+## 📥 Download
 
+<table>
+<tr>
+<td width="50%" align="center">
+<br/>
+<img src="https://img.shields.io/badge/Linux-CLI-FCC624?logo=linux&logoColor=black&style=for-the-badge" alt="Linux"/>
+<br/><br/>
+
+**[⬇ PreMap-linux-v1.0-release.tar.gz](https://github.com/fanjiaqi777/PreMap-V1.0-release/releases/download/v1.0/PreMap-linux-v1.0-release.tar.gz)**
+
+Or clone:
+```bash
+git clone https://github.com/fanjiaqi777/PreMap-V1.0-release.git
 ```
-Step 0 ─── VCF normalization, splitting & recoding ──────────── (Linux only)
-Step 0.5 ─ Compute genotype frequencies & statistics
-Step 1 ─── Cleaning, filtering & pseudo-testcross classification
-Step 2 ─── Phase correction & cluster cleaning (IBD detection)
-Step 3 ─── Binning — individual-level breakpoint identification
-Step 4 ─── OneBins — population-level bin markers, correction & imputation
-Step-Add ─ Additional statistics for sequencing data (hybrid verification)
-```
+Executables in `dist/` — no Python needed.
+<br/><br/>
+</td>
+<td width="50%" align="center">
+<br/>
+<img src="https://img.shields.io/badge/Windows-GUI-0078D6?logo=windows&logoColor=white&style=for-the-badge" alt="Windows"/>
+<br/><br/>
 
----
+**[⬇ PreMap_v1.0.exe](https://github.com/fanjiaqi777/PreMap-V1.0-release/releases/download/v1.0/PreMap_v1.0.exe)**
 
-## Quick Start (Linux)
+Double-click to run. No installation required.
+For small to medium-scale datasets.
+<br/><br/>
+</td>
+</tr>
+</table>
+
+<br/>
+
+## 🖥️ Windows GUI Preview
+
+PreMap provides a complete graphical interface on Windows — configure parameters, browse files, and run each step with one click:
+
+<p align="center">
+  <img src="images/windows1.png" alt="Step 1: Clean and Filter" width="70%"/>
+</p>
+
+<details>
+<summary><b>More screenshots</b></summary>
+<br/>
+<p align="center">
+  <img src="images/windows3.png" alt="Step 3: Bins Selection" width="70%"/>
+</p>
+<p align="center">
+  <img src="images/windows4.png" alt="Step 4: OneBins Processor" width="70%"/>
+</p>
+</details>
+
+<br/>
+
+## 🚀 Quick Start (Linux)
 
 ```bash
 # Step 0: VCF processing (Linux only)
 ./dist/run_step0 -i input.vcf
 
-# Step 0.5: Pre-process Excel
+# Step 0.5: Compute statistics
 ./dist/run_step0_5 -i input_file.xlsx
 
 # Step 1–4: Main workflow
@@ -114,9 +152,9 @@ Step-Add ─ Additional statistics for sequencing data (hybrid verification)
 ./dist/run_step_addition_caculation -i chr1_onebins.xlsx
 ```
 
----
+<br/>
 
-## System Requirements
+## 💻 System Requirements
 
 | Scale | Samples | Minimum | Recommended |
 |:------|:--------|:--------|:------------|
@@ -124,61 +162,59 @@ Step-Add ─ Additional statistics for sequencing data (hybrid verification)
 | Medium | 150–400 | 8-core, 32 GB RAM, 100 GB | 16-core, 64 GB RAM, SSD |
 | Large | ≥ 400 | 16-core, 64 GB RAM, 200 GB SSD | 24–32-core, 128 GB RAM, NVMe |
 
-> **Note**: Step 0 is Linux-only due to data volume and memory requirements. All other steps run on both Linux and Windows.
+> **Note**: Step 0 is Linux-only (large data volume). All other steps run on both Linux and Windows.
 
----
+<br/>
 
-## Documentation
+## 📖 Documentation
 
-For detailed usage instructions, parameter references, input templates, and screenshots, see the full bilingual User Guide:
+Full bilingual User Guide with step-by-step instructions, parameter references, and input templates:
 
-**[📖 Open User Guide (English / 中文)](https://fanjiaqi777.github.io/PreMap-V1.0-release/User-Guide.html)**
+**[📖 Open User Guide (English / 中文)](https://htmlpreview.github.io/?https://github.com/fanjiaqi777/PreMap-V1.0-release/blob/main/docs/User-Guide.html)**
 
 > **Offline**: Clone the repo and open `docs/User-Guide.html` in your browser.
 
----
+<br/>
 
-## Test Data
+## 🧪 Test Data
 
 A reproducible test dataset is available on Figshare:
 
-**[https://doi.org/10.6084/m9.figshare.30043073.v2](https://doi.org/10.6084/m9.figshare.30043073.v2)**
+[![DOI](https://img.shields.io/badge/Figshare-10.6084%2Fm9.figshare.30043073.v2-blue?logo=figshare&logoColor=white)](https://doi.org/10.6084/m9.figshare.30043073.v2)
 
----
+<br/>
 
-## Citation
+## 📝 Citation
 
 If you use PreMap in your research, please cite:
 
 > Fan J, Wu J, Arús P, Li Y, Cao K, Wang L (2025). Integrating whole-genome resequencing and machine learning to refine QTL analysis for fruit quality traits in peach. *Horticulture Research*, **12**(7): uhaf087.
 > [https://doi.org/10.1093/hr/uhaf087](https://doi.org/10.1093/hr/uhaf087)
 
----
+<br/>
 
-## License
+## 📄 License
 
-This project is licensed under [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/) — free for **academic research** and **non-commercial breeding activities**. Commercial use, redistribution of modified versions, and reverse engineering are prohibited. See [LICENSE](LICENSE) for full terms.
+This project is licensed under **[CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/)** — free for academic research and non-commercial breeding activities. See [LICENSE](LICENSE) for full terms.
 
-For commercial or integration licenses, contact [fjq690510307@gmail.com](mailto:fjq690510307@gmail.com).
+For commercial or integration licenses → [fjq690510307@gmail.com](mailto:fjq690510307@gmail.com)
 
----
+<br/>
 
-## Acknowledgments
+## 🙏 Acknowledgments
 
-- **Development team**: Peach Germplasm Resources and Breeding Innovation Team
-- **Collaborating team**: IRTA Rosaceae Genetics and Genomics Research Team
-- **External tools referenced**: VCF 4.2+ specification, bcftools, vcftools
+- **Development team** — Peach Germplasm Resources and Breeding Innovation Team
+- **Collaborating team** — IRTA Rosaceae Genetics and Genomics Research Team
+- **External references** — VCF 4.2+ spec, bcftools, vcftools
 
----
-
-## Contact
-
-**Jiaqi Fan** — [fjq690510307@gmail.com](mailto:fjq690510307@gmail.com)
-
-GitHub: [@fanjiaqi777](https://github.com/fanjiaqi777)
+<br/>
 
 ---
 
 <p align="center">
-  <sub>Built with Python &nbsp;·&nbsp; Pandas &nbsp;·&nbsp; NumPy &nbsp;·&nbsp; Jupyter</sub>
+  <b>Jiaqi Fan</b> &nbsp;·&nbsp; <a href="mailto:fjq690510307@gmail.com">fjq690510307@gmail.com</a> &nbsp;·&nbsp; <a href="https://github.com/fanjiaqi777">@fanjiaqi777</a>
+</p>
+
+<p align="center">
+  <sub>Built with Python · Pandas · NumPy · Jupyter</sub>
 </p>
