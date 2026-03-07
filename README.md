@@ -8,10 +8,14 @@
 
 <p align="center">
   <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.8+-3776AB?logo=python&logoColor=white" alt="Python 3.8+"/></a>
-  <a href="#supported-platforms"><img src="https://img.shields.io/badge/Platform-Linux%20%7C%20Windows-0078D4?logo=linux&logoColor=white" alt="Platform"/></a>
+  <a href="#download"><img src="https://img.shields.io/badge/Platform-Linux%20%7C%20Windows-0078D4?logo=linux&logoColor=white" alt="Platform"/></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-CC%20BY--NC--ND%204.0-EAB308?logo=creativecommons&logoColor=white" alt="License"/></a>
   <a href="https://doi.org/10.1093/hr/uhaf087"><img src="https://img.shields.io/badge/DOI-10.1093%2Fhr%2Fuhaf087-blue" alt="DOI"/></a>
   <a href="https://github.com/fanjiaqi777/PreMap-V1.0-release/stargazers"><img src="https://img.shields.io/github/stars/fanjiaqi777/PreMap-V1.0-release?style=social" alt="Stars"/></a>
+</p>
+
+<p align="center">
+  <b>English</b> | <a href="README_CN.md">中文</a>
 </p>
 
 ---
@@ -38,6 +42,45 @@
 
 ---
 
+## Download
+
+<table>
+<tr>
+<td width="50%" align="center">
+
+### Linux
+
+Command-line interface
+
+**[Download PreMap-linux-v1.0-release.tar.gz](https://github.com/fanjiaqi777/PreMap-V1.0-release/releases/download/v1.0/PreMap-linux-v1.0-release.tar.gz)**
+
+Or clone the repository:
+```bash
+git clone https://github.com/fanjiaqi777/PreMap-V1.0-release.git
+cd PreMap-V1.0-release/dist
+chmod +x run_step*
+```
+
+No Python environment needed.
+
+</td>
+<td width="50%" align="center">
+
+### Windows
+
+Graphical user interface (GUI)
+
+**[Download PreMap_v1.0.exe](https://github.com/fanjiaqi777/PreMap-V1.0-release/releases/download/v1.0/PreMap_v1.0.exe)**
+
+Double-click to run. No installation required.
+For small to medium-scale datasets.
+
+</td>
+</tr>
+</table>
+
+---
+
 ## Pipeline Modules
 
 ```
@@ -52,18 +95,7 @@ Step-Add ─ Additional statistics for sequencing data (hybrid verification)
 
 ---
 
-## Quick Start
-
-### 1. Download
-
-```bash
-git clone https://github.com/fanjiaqi777/PreMap-V1.0-release.git
-cd PreMap-V1.0-release
-```
-
-### 2. Run the pipeline
-
-All executables are in the `dist/` directory and require **no Python environment**.
+## Quick Start (Linux)
 
 ```bash
 # Step 0: VCF processing (Linux only)
@@ -82,8 +114,6 @@ All executables are in the `dist/` directory and require **no Python environment
 ./dist/run_step_addition_caculation -i chr1_onebins.xlsx
 ```
 
-> **Windows users**: A GUI interface is provided. See the [User Guide](docs/User-Guide.html) for details.
-
 ---
 
 ## System Requirements
@@ -98,49 +128,13 @@ All executables are in the `dist/` directory and require **no Python environment
 
 ---
 
-## Supported Platforms
-
-| Module | Linux | Windows |
-|:-------|:-----:|:-------:|
-| Step 0 (VCF processing) | ✅ | — |
-| Step 0.5 – Step 4 | ✅ CLI | ✅ GUI |
-| Step-Addition | ✅ CLI | ✅ GUI |
-
----
-
 ## Documentation
 
-The full **bilingual User Guide** (English / 中文) with step-by-step instructions, parameter references, screenshots, and input templates is available here:
+For detailed usage instructions, parameter references, input templates, and screenshots, see the full bilingual User Guide:
 
-**[📖 Open User Guide](docs/User-Guide.html)**
+**[📖 Open User Guide (English / 中文)](https://fanjiaqi777.github.io/PreMap-V1.0-release/User-Guide.html)**
 
-> **Tip**: Clone the repo and open `docs/User-Guide.html` in your browser for the best reading experience with sidebar navigation and language switching.
-
----
-
-## Repository Structure
-
-```
-PreMap-V1.0-release/
-├── dist/                   # Pre-built executables (Linux & Windows)
-│   ├── run_step0           # VCF processing
-│   ├── run_step0_5         # Statistics computation
-│   ├── run_step0_indel     # INDEL-specific processing
-│   ├── run_step1           # Cleaning & filtering
-│   ├── run_step2           # Phase correction
-│   ├── run_step3           # Binning
-│   ├── run_step4           # OneBins processor
-│   └── run_step_addition_caculation
-├── docs/                   # Documentation
-│   └── User-Guide.html     # Full bilingual user manual
-├── test/                   # Example datasets
-│   └── Chip-data/          # Chip genotyping test data
-├── images/                 # Documentation figures
-├── LICENSE                 # CC BY-NC-ND 4.0
-├── CITATION.cff            # Machine-readable citation metadata
-├── CHANGELOG.md            # Version history
-└── README.md
-```
+> **Offline**: Clone the repo and open `docs/User-Guide.html` in your browser.
 
 ---
 
